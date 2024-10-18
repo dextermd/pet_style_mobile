@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "855697215683",
+    "project_id": "petstyle",
+    "storage_bucket": "petstyle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855697215683:android:885922326cd377822c1276",
+        "android_client_info": {
+          "package_name": "dev.dextermd.petstyle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIAxXlG-mIYbco0NNjJaMM5XhxpORyeGo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

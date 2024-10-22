@@ -11,8 +11,6 @@ import 'package:pet_style_mobile/src/data/model/auth_response/auth_response.dart
 import 'package:pet_style_mobile/src/data/model/user/user.dart';
 import 'package:pet_style_mobile/src/domain/repository/auth_repository.dart';
 
-
-
 class AuthRepositoryImpl implements AuthRepository {
   final Dio dio;
   final StorageServices _storageServices = GetIt.I.get<StorageServices>();
@@ -68,10 +66,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthResponse?> refreshToken(String oldToken) async {
-    Dio localDio = Dio();
     oldToken = oldToken.replaceFirst('Bearer ', '');
     try {
-      final Response response = await localDio.post(
+      final Response response = await dio.post(
         AppSecrets.refreshTokenUrl,
         data: json.encode({'refresh_token': oldToken}),
         options: Options(
@@ -82,15 +79,15 @@ class AuthRepositoryImpl implements AuthRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         AuthResponse authResponse = AuthResponse.fromJson(data);
 
-        logDebug(
-            'RefreshToken(accessToken) saved: ${authResponse.accessToken}');
-        logDebug(
-            'RefreshToken(refreshToken) saved: ${authResponse.refreshToken}');
-
         await _storageServices.setString(
             AppConstants.STORAGE_ACCESS_TOKEN, authResponse.accessToken!);
         await _storageServices.setString(
             AppConstants.STORAGE_REFRESH_TOKEN, authResponse.refreshToken!);
+
+        logDebug(
+            'RefreshToken(accessToken) saved: ${authResponse.accessToken}');
+        logDebug(
+            'RefreshToken(refreshToken) saved: ${authResponse.refreshToken}');
 
         return authResponse;
       }

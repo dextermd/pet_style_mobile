@@ -14,35 +14,59 @@ sealed class AppointmentState extends Equatable {
 
 final class AppointmentInitial extends AppointmentState {}
 
-final class AppointmentAvailableSlotsLoading extends AppointmentState {}
-
-final class AppointmentAvailableSlotsError extends AppointmentState {
+final class AppointmentError extends AppointmentState {
   final String message;
-
-  const AppointmentAvailableSlotsError(this.message);
+  const AppointmentError(this.message);
 
   @override
   List<Object> get props => [message];
 }
 
-final class AppointmentAvailableDaysOfWeekLoading extends AppointmentState {}
+final class SlotsLoading extends AppointmentState {}
 
-final class AppointmentAvailableDaysOfWeekError extends AppointmentState {
+final class SlotsLoaded extends AppointmentState {}
+
+final class SlotsEmpty extends AppointmentState {}
+
+final class AvailableSlotsError extends AppointmentState {
   final String message;
 
-  const AppointmentAvailableDaysOfWeekError(this.message);
+  const AvailableSlotsError(this.message);
 
   @override
   List<Object> get props => [message];
 }
 
-final class AppointmentPetsProfileLoading extends AppointmentState {}
+final class AvailableDaysOfWeekLoading extends AppointmentState {}
 
-final class AppointmentPetsProfileError extends AppointmentState {
+final class AvailableDaysOfWeekError extends AppointmentState {
   final String message;
 
-  const AppointmentPetsProfileError(this.message);
+  const AvailableDaysOfWeekError(this.message);
 
   @override
   List<Object> get props => [message];
 }
+
+final class PetsProfileLoading extends AppointmentState {}
+
+final class PetsProfileLoaded extends AppointmentState {}
+
+final class PetsProfileError extends AppointmentState {
+  final String message;
+
+  const PetsProfileError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class PhoneNumberEmpty extends AppointmentState {}
+
+final class PhoneNumberExist extends AppointmentState {}
+
+final class CreateAppointmentSuccess extends AppointmentState {}
+
+final class AppointmentExist extends AppointmentState {}
+
+final class AppointmentNotExist extends AppointmentState {}

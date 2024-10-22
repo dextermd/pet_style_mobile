@@ -12,8 +12,18 @@ class SocketService {
   late IO.Socket socket;
   final AuthRepository _authRepository = GetIt.I<AuthRepository>();
   final StorageServices _storageServices = GetIt.I<StorageServices>();
-  late String? token = '';
+  late String? token;
+  late String? userId;
   bool isConnected = false;
+
+  SocketService() {
+    token = _storageServices.getString(AppConstants.STORAGE_ACCESS_TOKEN);
+    userId = _storageServices.getString(AppConstants.STORAGE_USER_ID);
+
+    if (token != null && userId != null) {
+      connect(userId!, token!);
+    }
+  }
 
   void connect(String userId, String token) async {
     if (isConnected) {

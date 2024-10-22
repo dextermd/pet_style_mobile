@@ -7,39 +7,66 @@ sealed class AppointmentEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AppointmentGetAvailableDaysOfWeekEvent extends AppointmentEvent {
+class GetAvailableDaysOfWeekEvent extends AppointmentEvent {
   final String groomerId;
 
-  const AppointmentGetAvailableDaysOfWeekEvent(this.groomerId);
+  const GetAvailableDaysOfWeekEvent(this.groomerId);
 
   @override
   List<Object> get props => [groomerId];
 }
 
-class AppointmentGetAvailableTimeSlotsEvent extends AppointmentEvent {
+class GetAvailableTimeSlotsEvent extends AppointmentEvent {
   final String date;
   final String groomerId;
 
-  const AppointmentGetAvailableTimeSlotsEvent(this.date, this.groomerId);
+  const GetAvailableTimeSlotsEvent(this.date, this.groomerId);
 
   @override
   List<Object> get props => [date, groomerId];
 }
 
-class AppointmentInitDatesEvent extends AppointmentEvent {
+class InitDatesEvent extends AppointmentEvent {
   final HwDayOfWeekAppointmen hwDayOfWeekAppointmen;
 
-  const AppointmentInitDatesEvent(this.hwDayOfWeekAppointmen);
+  const InitDatesEvent(this.hwDayOfWeekAppointmen);
 
   @override
   List<Object> get props => [hwDayOfWeekAppointmen];
 }
 
-class AppointmentGetPetsProfleEvent extends AppointmentEvent {
+class GetPetsProfleEvent extends AppointmentEvent {
   final bool isHomeAppointment;
 
-  const AppointmentGetPetsProfleEvent(this.isHomeAppointment);
+  const GetPetsProfleEvent(this.isHomeAppointment);
 
   @override
   List<Object> get props => [];
+}
+
+class CheckPhoneNumberEvent extends AppointmentEvent {
+  const CheckPhoneNumberEvent();
+  @override
+  List<Object> get props => [];
+}
+
+class CreateAppointmentEvent extends AppointmentEvent {
+  final Appointment appointment;
+
+  const CreateAppointmentEvent(this.appointment);
+
+  @override
+  List<Object> get props => [appointment];
+}
+
+class AddPhoneNumberExistStateEvent extends AppointmentEvent {}
+
+class CheckIfExistingAppointmentEvent extends AppointmentEvent {
+  final String petId;
+  final DateTime date;
+
+  const CheckIfExistingAppointmentEvent(this.petId, this.date);
+
+  @override
+  List<Object> get props => [petId, date];
 }

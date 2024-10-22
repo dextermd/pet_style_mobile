@@ -1,0 +1,2 @@
+// Не выходит из акаунта если refresh token просрочен
+// Поправить State management в  Appointment Screen

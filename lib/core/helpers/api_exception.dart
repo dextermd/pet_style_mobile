@@ -1,13 +1,12 @@
 import 'package:dio/dio.dart';
 
 class ApiException implements Exception {
-
   static List<String> _getExeptionMessage(DioException exception) {
     switch (exception.type) {
       case DioExceptionType.badResponse:
         return [
-          'Ощибка сервера',
-          'Попробуйте позже'
+          exception.response?.data['error'] ?? 'Ошибка',
+          exception.response?.data['message'] ?? 'Попробуйте позже'
         ];
 
       case DioExceptionType.connectionError:
@@ -52,7 +51,8 @@ class ApiException implements Exception {
           'Проверьте ваше интернет соединение и попробуйте еще раз'
         ];
 
-      default: return ['Ошибка', 'Попробуйте позже'];
+      default:
+        return ['Ошибка', 'Попробуйте позже'];
     }
   }
 

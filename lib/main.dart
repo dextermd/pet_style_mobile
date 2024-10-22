@@ -9,6 +9,7 @@ import 'package:pet_style_mobile/core/services/storage_services.dart';
 import 'package:pet_style_mobile/core/theme/app_theme.dart';
 import 'package:pet_style_mobile/src/view/router/app_router.dart';
 import 'package:pet_style_mobile/utils.dart';
+import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 void main() async {
@@ -28,6 +29,8 @@ Future<void> setup() async {
   await setupFirebase();
 
   DependencyInjector.setup(talker);
+
+  Bloc.observer = TalkerBlocObserver(talker: talker);
 }
 
 class MyApp extends StatelessWidget {

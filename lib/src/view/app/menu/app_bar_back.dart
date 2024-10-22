@@ -4,33 +4,41 @@ import 'package:pet_style_mobile/core/theme/colors.dart';
 class AppBarBack extends StatelessWidget implements PreferredSizeWidget {
   final Function() onPressed;
   final String? title;
-  final Color? backgroundColor;
+  final double toolbarHeight;
 
   const AppBarBack({
     super.key,
     required this.onPressed,
     this.title,
-    this.backgroundColor = AppColors.primaryTransparent,
+    this.toolbarHeight = 60,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: GestureDetector(
-          onTap: onPressed,
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.containerBorder,
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.arrow_back,
-                color: AppColors.whiteText,
-                size: 20,
-              ),
+      backgroundColor: Colors.transparent,
+      foregroundColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      titleSpacing: 10,
+      toolbarHeight: toolbarHeight,
+      leadingWidth: 80,
+      leading: InkWell(
+        onTap: onPressed,
+        child: Container(
+          height: 40,
+          width: 40,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.containerBorder,
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.arrow_back,
+              color: AppColors.whiteText,
+              size: 20,
             ),
           ),
         ),

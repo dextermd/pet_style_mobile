@@ -40,7 +40,7 @@ class MyTextField extends StatelessWidget {
     this.maxLines = 1,
     this.style = const TextStyle(
       color: AppColors.primaryText,
-      fontSize: 13,
+      fontSize: 16,
     ),
     this.maxLenght = 500,
     this.shouldShowCounter = false,

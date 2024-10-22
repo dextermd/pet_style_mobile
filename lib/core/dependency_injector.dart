@@ -6,11 +6,13 @@ import 'package:pet_style_mobile/core/services/socket_service.dart';
 import 'package:pet_style_mobile/src/data/repository/appointment_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/auth_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/chat_repository_impl.dart';
+import 'package:pet_style_mobile/src/data/repository/otp_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/pet_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/user_repository_impl.dart';
 import 'package:pet_style_mobile/src/domain/repository/appointment_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/auth_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/chat_repository.dart';
+import 'package:pet_style_mobile/src/domain/repository/otp_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/pet_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/user_repository.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
@@ -49,6 +51,10 @@ class DependencyInjector {
 
     _getIt.registerLazySingleton<AppointmentRepository>(
       () => AppointmentRepositoryImpl(dio: dio),
+    );
+
+    _getIt.registerLazySingleton<OtpRepository>(
+      () => OtpRepositoryImpl(dio: dio),
     );
 
     _getIt.registerLazySingleton<ChatRepository>(

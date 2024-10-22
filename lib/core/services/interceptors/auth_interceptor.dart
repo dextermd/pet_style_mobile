@@ -5,7 +5,6 @@ import 'package:pet_style_mobile/core/values/constants.dart';
 import 'package:pet_style_mobile/src/data/model/auth_response/auth_response.dart';
 import 'package:pet_style_mobile/src/domain/repository/auth_repository.dart';
 
-
 class AuthInterceptor implements InterceptorsWrapper {
   final Dio dio;
   final AuthRepository _authRepository = GetIt.I<AuthRepository>();

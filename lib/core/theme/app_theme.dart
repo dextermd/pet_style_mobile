@@ -21,6 +21,55 @@ class AppTheme {
       ),
       side: BorderSide.none,
     ),
+    textTheme: const TextTheme(
+      displayLarge: TextStyle(
+          fontFamily: 'Jost',
+          fontSize: 50,
+          fontWeight: FontWeight.bold,
+          color: AppColors.primaryText),
+      displayMedium: TextStyle(
+        fontFamily: 'Jost',
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+        color: AppColors.primaryText,
+      ),
+      displaySmall: TextStyle(
+        fontFamily: 'Jost',
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: AppColors.primaryText,
+      ),
+      bodyLarge: TextStyle(
+        fontFamily: 'Jost',
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: AppColors.primaryText,
+      ),
+      bodyMedium: TextStyle(
+        fontFamily: 'Jost',
+        fontSize: 14,
+        fontWeight: FontWeight.normal,
+        color: AppColors.primaryText,
+      ),
+      bodySmall: TextStyle(
+        fontFamily: 'Jost',
+        fontSize: 12,
+        fontWeight: FontWeight.normal,
+        color: AppColors.primaryText,
+      ),
+      labelSmall: TextStyle(
+        fontFamily: 'Jost',
+        fontSize: 10,
+        fontWeight: FontWeight.normal,
+        color: AppColors.primaryText,
+      ),
+      titleMedium: TextStyle(
+        fontFamily: 'Jost',
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: AppColors.primaryLinkActive,
+      ),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(27),
       border: _border(),

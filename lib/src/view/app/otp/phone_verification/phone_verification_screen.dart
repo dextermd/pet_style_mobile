@@ -1,13 +1,17 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pet_style_mobile/blocs/appointment/appointment_bloc.dart';
+import 'package:pet_style_mobile/blocs/otp/otp_bloc.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
+import 'package:pet_style_mobile/src/utils/app_utils.dart';
 import 'package:pet_style_mobile/src/view/app/menu/app_bar_back.dart';
+import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 import 'package:pet_style_mobile/src/view/widget/my_button.dart';
 import 'package:pet_style_mobile/src/view/widget/my_text_field.dart';
-
 
 class PhoneVerificationScreen extends StatefulWidget {
   const PhoneVerificationScreen({super.key});
@@ -18,7 +22,7 @@ class PhoneVerificationScreen extends StatefulWidget {
 }
 
 class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
-  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final _formPhoneKey = GlobalKey<FormState>();
 
   @override
@@ -30,9 +34,19 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
         },
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: BlocListener<OtpBloc, OtpState>(
+          listener: (context, state) {
+            if (state is OtpSent) {
+              context.pushNamed(AppRoutes.otpCode, extra: state.phone);
+            } else if (state is OtpSentError) {
+              AppUtils.showToastError(context, '', state.message);
+            } else if (state is PhoneNumberUpdated) {
+              context.read<AppointmentBloc>().add(AddPhoneNumberExistStateEvent());
+
+            }
+          },
           child: Container(
-            padding: const EdgeInsets.all(30),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
                 Lottie.asset(
@@ -73,7 +87,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                       contentPadding: 15,
                       hintText: 'Номер телефона',
                       keyboardType: TextInputType.number,
-                      controller: phoneController,
+                      controller: _phoneController,
                       maxLenght: 8,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -87,7 +101,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                       onChanged: (value) {
                         if (value.startsWith('0')) {
                           setState(() {
-                            phoneController.text = value.substring(1);
+                            _phoneController.text = value.substring(1);
                           });
                         }
                       },
@@ -126,17 +140,16 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 100,
+                  height: 20,
                 ),
                 FadeInDown(
                   child: MyButton(
                     text: 'Продолжить',
                     onPressed: () {
                       if (_formPhoneKey.currentState!.validate()) {
-                        context.goNamed(
-                          'otp_code',
-                          extra: phoneController.value.text,
-                        );
+                        context
+                            .read<OtpBloc>()
+                            .add(OtpSendEvent(_phoneController.text));
                       }
                     },
                     width: double.infinity,

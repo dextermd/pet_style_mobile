@@ -71,7 +71,7 @@ class AppTheme {
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
-      contentPadding: const EdgeInsets.all(27),
+      contentPadding: const EdgeInsets.all(12),
       border: _border(),
       enabledBorder: _border(AppColors.primaryEnabledBorder),
       focusedBorder: _border(AppColors.primaryFocusBorder),

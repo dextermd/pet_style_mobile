@@ -17,9 +17,11 @@ class SearchableDropdown extends StatelessWidget {
   });
 
   List<SearchFieldListItem<String>> _filterSuggestions(String query) {
-    final lowerCaseQuery = query.toLowerCase().replaceAll('-', '').replaceAll(' ', '');
+    final lowerCaseQuery =
+        query.toLowerCase().replaceAll('-', '').replaceAll(' ', '');
     return suggestions.where((item) {
-      final suggestion = item.searchKey.toLowerCase().replaceAll('-', '').replaceAll(' ', '');
+      final suggestion =
+          item.searchKey.toLowerCase().replaceAll('-', '').replaceAll(' ', '');
       return suggestion.contains(lowerCaseQuery);
     }).toList();
   }
@@ -30,10 +32,10 @@ class SearchableDropdown extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       hint: 'Выберите породу',
-      // searchStyle: const TextStyle(
-      //   color: AppColors.primaryText,
-      //   fontSize: 13,
-      // ),
+      suggestionStyle: const TextStyle(
+        color: AppColors.primaryText,
+        fontSize: 13,
+      ),
       suggestions: suggestions,
       scrollbarDecoration: ScrollbarDecoration(
         thumbColor: AppColors.primaryElement.withOpacity(0.5),
@@ -46,6 +48,10 @@ class SearchableDropdown extends StatelessWidget {
         contentPadding: const EdgeInsets.all(16),
         fillColor: AppColors.containerColor.withOpacity(0.2),
         filled: true,
+        hintStyle: TextStyle(
+          color: AppColors.primaryText.withOpacity(0.5),
+          fontSize: 13,
+        ),
       ),
       suggestionsDecoration: SuggestionDecoration(
         color: AppColors.containerColor.withOpacity(0.2),

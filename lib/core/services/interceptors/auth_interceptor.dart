@@ -56,7 +56,7 @@ class AuthInterceptor implements InterceptorsWrapper {
             return handler.resolve(cloneReq);
           }
         } catch (e) {
-          await _authRepository.logOut();
+          await _authRepository.logOutUI();
         }
       }
     }

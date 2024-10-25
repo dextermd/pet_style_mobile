@@ -457,7 +457,7 @@ class _PetFormScreenState extends State<PetFormScreen> {
                                             firstDate:
                                                 DateTime(initialDate.year - 25),
                                             lastDate: DateTime.now(),
-                                            locale: const Locale("ru", "RU"),
+                                            //locale: const Locale("ru", "RU"),
                                           );
                                           if (picked != null &&
                                               picked != DateTime.now()) {

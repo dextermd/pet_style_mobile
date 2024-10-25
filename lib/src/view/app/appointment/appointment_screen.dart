@@ -12,7 +12,9 @@ import 'package:pet_style_mobile/core/services/storage_services.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/core/values/constants.dart';
 import 'package:pet_style_mobile/src/data/model/appointment/appointment.dart';
+import 'package:pet_style_mobile/src/data/model/groomer/groomer.dart';
 import 'package:pet_style_mobile/src/data/model/pet/pet.dart';
+import 'package:pet_style_mobile/src/data/model/user/user.dart';
 import 'package:pet_style_mobile/src/utils/app_utils.dart';
 import 'package:pet_style_mobile/src/view/app/menu/app_bar_back.dart';
 import 'package:pet_style_mobile/src/view/router/app_routes.dart';
@@ -139,10 +141,10 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     Appointment(
                       appointmentDate: _selectedDate,
                       location: 'Home',
-                      groomerId: '1',
-                      userId: userId,
+                      groomer: Groomer(id: '1'),
+                      user: User(id: userId),
                       status: 0,
-                      petId: _selectedPet!.id,
+                      pet: Pet(id: _selectedPet!.id),
                     ),
                   ),
                 );
@@ -268,9 +270,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         ),
                       ),
                     ),
-                  if (state is SlotsLoaded ||
-                      state is PetsProfileLoaded ||
-                      state is AppointmentError)
+                  if (AppointmentState.timeSlotAppointment.availableTimeSlot!.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 20),
@@ -296,9 +296,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         ],
                       ),
                     ),
-                  if (state is SlotsLoaded ||
-                      state is PetsProfileLoaded ||
-                      state is AppointmentError)
+                  if (AppointmentState.timeSlotAppointment.availableTimeSlot!.isNotEmpty)
                     SizedBox(
                       height: 20 *
                           (AppointmentState.timeSlotAppointment.allTimeSlot!

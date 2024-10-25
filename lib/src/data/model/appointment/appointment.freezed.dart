@@ -24,9 +24,12 @@ mixin _$Appointment {
   DateTime? get appointmentDate => throw _privateConstructorUsedError;
   String? get location => throw _privateConstructorUsedError;
   int? get status => throw _privateConstructorUsedError;
-  String? get userId => throw _privateConstructorUsedError;
-  String? get petId => throw _privateConstructorUsedError;
-  String? get groomerId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'userId', toJson: _userToJson)
+  User? get user => throw _privateConstructorUsedError;
+  @JsonKey(name: 'petId', toJson: _petToJson)
+  Pet? get pet => throw _privateConstructorUsedError;
+  @JsonKey(name: 'groomerId', toJson: _groomerToJson)
+  Groomer? get groomer => throw _privateConstructorUsedError;
 
   /// Serializes this Appointment to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -48,9 +51,13 @@ abstract class $AppointmentCopyWith<$Res> {
       {@JsonKey(name: 'appointment_date') DateTime? appointmentDate,
       String? location,
       int? status,
-      String? userId,
-      String? petId,
-      String? groomerId});
+      @JsonKey(name: 'userId', toJson: _userToJson) User? user,
+      @JsonKey(name: 'petId', toJson: _petToJson) Pet? pet,
+      @JsonKey(name: 'groomerId', toJson: _groomerToJson) Groomer? groomer});
+
+  $UserCopyWith<$Res>? get user;
+  $PetCopyWith<$Res>? get pet;
+  $GroomerCopyWith<$Res>? get groomer;
 }
 
 /// @nodoc
@@ -71,9 +78,9 @@ class _$AppointmentCopyWithImpl<$Res, $Val extends Appointment>
     Object? appointmentDate = freezed,
     Object? location = freezed,
     Object? status = freezed,
-    Object? userId = freezed,
-    Object? petId = freezed,
-    Object? groomerId = freezed,
+    Object? user = freezed,
+    Object? pet = freezed,
+    Object? groomer = freezed,
   }) {
     return _then(_value.copyWith(
       appointmentDate: freezed == appointmentDate
@@ -88,19 +95,61 @@ class _$AppointmentCopyWithImpl<$Res, $Val extends Appointment>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
-      userId: freezed == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      petId: freezed == petId
-          ? _value.petId
-          : petId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      groomerId: freezed == groomerId
-          ? _value.groomerId
-          : groomerId // ignore: cast_nullable_to_non_nullable
-              as String?,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as User?,
+      pet: freezed == pet
+          ? _value.pet
+          : pet // ignore: cast_nullable_to_non_nullable
+              as Pet?,
+      groomer: freezed == groomer
+          ? _value.groomer
+          : groomer // ignore: cast_nullable_to_non_nullable
+              as Groomer?,
     ) as $Val);
+  }
+
+  /// Create a copy of Appointment
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res>? get user {
+    if (_value.user == null) {
+      return null;
+    }
+
+    return $UserCopyWith<$Res>(_value.user!, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
+    });
+  }
+
+  /// Create a copy of Appointment
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PetCopyWith<$Res>? get pet {
+    if (_value.pet == null) {
+      return null;
+    }
+
+    return $PetCopyWith<$Res>(_value.pet!, (value) {
+      return _then(_value.copyWith(pet: value) as $Val);
+    });
+  }
+
+  /// Create a copy of Appointment
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GroomerCopyWith<$Res>? get groomer {
+    if (_value.groomer == null) {
+      return null;
+    }
+
+    return $GroomerCopyWith<$Res>(_value.groomer!, (value) {
+      return _then(_value.copyWith(groomer: value) as $Val);
+    });
   }
 }
 
@@ -116,9 +165,16 @@ abstract class _$$AppointmentImplCopyWith<$Res>
       {@JsonKey(name: 'appointment_date') DateTime? appointmentDate,
       String? location,
       int? status,
-      String? userId,
-      String? petId,
-      String? groomerId});
+      @JsonKey(name: 'userId', toJson: _userToJson) User? user,
+      @JsonKey(name: 'petId', toJson: _petToJson) Pet? pet,
+      @JsonKey(name: 'groomerId', toJson: _groomerToJson) Groomer? groomer});
+
+  @override
+  $UserCopyWith<$Res>? get user;
+  @override
+  $PetCopyWith<$Res>? get pet;
+  @override
+  $GroomerCopyWith<$Res>? get groomer;
 }
 
 /// @nodoc
@@ -137,9 +193,9 @@ class __$$AppointmentImplCopyWithImpl<$Res>
     Object? appointmentDate = freezed,
     Object? location = freezed,
     Object? status = freezed,
-    Object? userId = freezed,
-    Object? petId = freezed,
-    Object? groomerId = freezed,
+    Object? user = freezed,
+    Object? pet = freezed,
+    Object? groomer = freezed,
   }) {
     return _then(_$AppointmentImpl(
       appointmentDate: freezed == appointmentDate
@@ -154,18 +210,18 @@ class __$$AppointmentImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
-      userId: freezed == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      petId: freezed == petId
-          ? _value.petId
-          : petId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      groomerId: freezed == groomerId
-          ? _value.groomerId
-          : groomerId // ignore: cast_nullable_to_non_nullable
-              as String?,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as User?,
+      pet: freezed == pet
+          ? _value.pet
+          : pet // ignore: cast_nullable_to_non_nullable
+              as Pet?,
+      groomer: freezed == groomer
+          ? _value.groomer
+          : groomer // ignore: cast_nullable_to_non_nullable
+              as Groomer?,
     ));
   }
 }
@@ -177,9 +233,9 @@ class _$AppointmentImpl implements _Appointment {
       {@JsonKey(name: 'appointment_date') this.appointmentDate,
       this.location,
       this.status,
-      this.userId,
-      this.petId,
-      this.groomerId});
+      @JsonKey(name: 'userId', toJson: _userToJson) this.user,
+      @JsonKey(name: 'petId', toJson: _petToJson) this.pet,
+      @JsonKey(name: 'groomerId', toJson: _groomerToJson) this.groomer});
 
   factory _$AppointmentImpl.fromJson(Map<String, dynamic> json) =>
       _$$AppointmentImplFromJson(json);
@@ -192,15 +248,18 @@ class _$AppointmentImpl implements _Appointment {
   @override
   final int? status;
   @override
-  final String? userId;
+  @JsonKey(name: 'userId', toJson: _userToJson)
+  final User? user;
   @override
-  final String? petId;
+  @JsonKey(name: 'petId', toJson: _petToJson)
+  final Pet? pet;
   @override
-  final String? groomerId;
+  @JsonKey(name: 'groomerId', toJson: _groomerToJson)
+  final Groomer? groomer;
 
   @override
   String toString() {
-    return 'Appointment(appointmentDate: $appointmentDate, location: $location, status: $status, userId: $userId, petId: $petId, groomerId: $groomerId)';
+    return 'Appointment(appointmentDate: $appointmentDate, location: $location, status: $status, user: $user, pet: $pet, groomer: $groomer)';
   }
 
   @override
@@ -213,16 +272,15 @@ class _$AppointmentImpl implements _Appointment {
             (identical(other.location, location) ||
                 other.location == location) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.petId, petId) || other.petId == petId) &&
-            (identical(other.groomerId, groomerId) ||
-                other.groomerId == groomerId));
+            (identical(other.user, user) || other.user == user) &&
+            (identical(other.pet, pet) || other.pet == pet) &&
+            (identical(other.groomer, groomer) || other.groomer == groomer));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, appointmentDate, location, status, userId, petId, groomerId);
+      runtimeType, appointmentDate, location, status, user, pet, groomer);
 
   /// Create a copy of Appointment
   /// with the given fields replaced by the non-null parameter values.
@@ -245,9 +303,10 @@ abstract class _Appointment implements Appointment {
       {@JsonKey(name: 'appointment_date') final DateTime? appointmentDate,
       final String? location,
       final int? status,
-      final String? userId,
-      final String? petId,
-      final String? groomerId}) = _$AppointmentImpl;
+      @JsonKey(name: 'userId', toJson: _userToJson) final User? user,
+      @JsonKey(name: 'petId', toJson: _petToJson) final Pet? pet,
+      @JsonKey(name: 'groomerId', toJson: _groomerToJson)
+      final Groomer? groomer}) = _$AppointmentImpl;
 
   factory _Appointment.fromJson(Map<String, dynamic> json) =
       _$AppointmentImpl.fromJson;
@@ -260,11 +319,14 @@ abstract class _Appointment implements Appointment {
   @override
   int? get status;
   @override
-  String? get userId;
+  @JsonKey(name: 'userId', toJson: _userToJson)
+  User? get user;
   @override
-  String? get petId;
+  @JsonKey(name: 'petId', toJson: _petToJson)
+  Pet? get pet;
   @override
-  String? get groomerId;
+  @JsonKey(name: 'groomerId', toJson: _groomerToJson)
+  Groomer? get groomer;
 
   /// Create a copy of Appointment
   /// with the given fields replaced by the non-null parameter values.

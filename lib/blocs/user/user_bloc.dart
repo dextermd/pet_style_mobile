@@ -2,29 +2,30 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:pet_style_mobile/core/services/storage_services.dart';
-import 'package:pet_style_mobile/core/values/constants.dart';
+import 'package:pet_style_mobile/src/data/model/appointment/appointment.dart';
 import 'package:pet_style_mobile/src/data/model/pet/pet.dart';
 import 'package:pet_style_mobile/src/data/model/user/user.dart';
+import 'package:pet_style_mobile/src/domain/repository/appointment_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/user_repository.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final UserRepository userRepository;
-  final StorageServices _storageServices = GetIt.I<StorageServices>();
-  UserBloc(this.userRepository) : super(UserInitial()) {
-
+  final UserRepository _userRepository;
+  final AppointmentRepository _appointmentRepository;
+  UserBloc(this._userRepository, this._appointmentRepository)
+      : super(UserInitial()) {
     on<FetchUserData>((event, emit) async {
       emit(UserLoading());
       try {
-        final user = await userRepository.getUserData();
+        final user = await _userRepository.getUserData();
+        final List<Appointment> activeAppointments =
+            await _appointmentRepository.getActiveAppointmentsByUser();
         final List<Pet> pets = user?.pets?.toList() ?? [];
+
         if (user != null) {
-          _storageServices.setString(AppConstants.STORAGE_USER_ID, user.id ?? '');
-          emit(UserLoaded(user, pets));
+          emit(UserLoaded(user, pets, activeAppointments));
         } else {
           emit(const UserError('Failed to load user data'));
         }
@@ -36,7 +37,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<GetSenderUserEvent>((event, emit) async {
       emit(SenderLoading());
       try {
-        final user = await userRepository.getUserById(event.senderId.toString());
+        final user =
+            await _userRepository.getUserById(event.senderId.toString());
         if (user != null) {
           emit(SenderLoaded(user));
         } else {
@@ -46,6 +48,5 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserError(e.toString()));
       }
     });
-
   }
 }

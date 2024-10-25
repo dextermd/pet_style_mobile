@@ -23,3 +23,11 @@ class GetSenderUserEvent extends UserEvent {
   @override
   List<Object?> get props => [senderId];
 }
+
+// getActiveAppointmentsByUser
+class GetActiveAppointmentsByUserEvent extends UserEvent {
+  const GetActiveAppointmentsByUserEvent();
+
+  @override
+  List<Object?> get props => [];
+}

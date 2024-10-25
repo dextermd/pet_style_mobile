@@ -64,42 +64,43 @@ class AppRouter {
         builder: (context, state, child) => BottomNavigation(child: child),
         routes: [
           GoRoute(
-              path: AppRoutes.homePath,
-              name: AppRoutes.home,
-              parentNavigatorKey: _shellNavigatorKey,
-              builder: (context, state) => const HomeScreen(),
-              routes: [
-                GoRoute(
-                  path: AppRoutes.petForm,
-                  name: AppRoutes.petForm,
-                  builder: (context, state) =>
-                      PetFormScreen(id: state.extra as String?),
-                  parentNavigatorKey: _shellNavigatorKey,
-                ),
-                GoRoute(
-                  path: AppRoutes.appointment,
-                  name: AppRoutes.appointment,
-                  builder: (context, state) => const AppointmentScreen(),
-                  parentNavigatorKey: _shellNavigatorKey,
-                  routes: [
-                    GoRoute(
-                      path: AppRoutes.phoneVerification,
-                      name: AppRoutes.phoneVerification,
-                      builder: (context, state) =>
-                          const PhoneVerificationScreen(),
-                      routes: [
-                        GoRoute(
-                          path: AppRoutes.otpCode,
-                          name: AppRoutes.otpCode,
-                          builder: (context, state) => OtpCodeScreen(
-                            phone: state.extra as String,
-                          ),
+            path: AppRoutes.homePath,
+            name: AppRoutes.home,
+            parentNavigatorKey: _shellNavigatorKey,
+            builder: (context, state) => const HomeScreen(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.petForm,
+                name: AppRoutes.petForm,
+                builder: (context, state) =>
+                    PetFormScreen(id: state.extra as String?),
+                parentNavigatorKey: _shellNavigatorKey,
+              ),
+              GoRoute(
+                path: AppRoutes.appointment,
+                name: AppRoutes.appointment,
+                builder: (context, state) => const AppointmentScreen(),
+                parentNavigatorKey: _shellNavigatorKey,
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.phoneVerification,
+                    name: AppRoutes.phoneVerification,
+                    builder: (context, state) =>
+                        const PhoneVerificationScreen(),
+                    routes: [
+                      GoRoute(
+                        path: AppRoutes.otpCode,
+                        name: AppRoutes.otpCode,
+                        builder: (context, state) => OtpCodeScreen(
+                          phone: state.extra as String,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ]),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
           GoRoute(
             path: AppRoutes.schedulePath,
             name: AppRoutes.schedule,

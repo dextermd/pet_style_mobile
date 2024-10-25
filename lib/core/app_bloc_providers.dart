@@ -39,6 +39,7 @@ class AppBlocProviders {
           lazy: true,
           create: (context) => UserBloc(
             GetIt.I<UserRepository>(),
+            GetIt.I<AppointmentRepository>(),
           ),
         ),
         BlocProvider<PetFormBloc>(

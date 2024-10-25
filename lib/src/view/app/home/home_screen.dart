@@ -3,16 +3,13 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
-import 'package:pet_style_mobile/core/helpers/log_helper.dart';
-import 'package:pet_style_mobile/core/services/storage_services.dart';
+import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/appointment_card.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/pet_card.dart';
 import 'package:pet_style_mobile/src/view/widget/base_container.dart';
 import 'package:pet_style_mobile/src/view/widget/t_rounded_container.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,15 +19,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late StorageServices storageServices;
-
   @override
   void initState() {
     super.initState();
-    storageServices = GetIt.I<StorageServices>();
+
     context.read<UserBloc>().add(const FetchUserData());
-    logDebug(storageServices.getString('access_token').toString());
-    logDebug(storageServices.getString('user_id').toString());
   }
 
   @override
@@ -146,8 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Row(
                     children: [
                       const Icon(
@@ -195,98 +188,117 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 20),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.schedule,
-                        color: AppColors.primaryElement,
-                        size: 24,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Предстоящие записи',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryElement,
-                                ),
-                      ),
-                    ],
+              if (state.activeAppointments.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.schedule,
+                          color: AppColors.primaryElement,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Предстоящие записи',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryElement,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 120,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: state.pets.length,
-                    separatorBuilder: (context, index) => const SizedBox(
-                      width: 16,
-                    ),
-                    itemBuilder: (context, index) {
-                      return BaseContainer(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: Row(
-                          children: [
-                            TRoundedContainer(
-                              width: 100,
-                              height: 100,
-                              radius: 25,
-                              margin: const EdgeInsets.all(10),
-                              child: Center(
-                                child: Text(
-                                  '12\nАвгуста',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.primaryElement),
+              if (state.activeAppointments.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 120,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.activeAppointments.length,
+                      separatorBuilder: (context, index) => const SizedBox(
+                        width: 16,
+                      ),
+                      itemBuilder: (context, index) {
+                        return BaseContainer(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: Row(
+                            children: [
+                              TRoundedContainer(
+                                width: 100,
+                                height: 100,
+                                radius: 10,
+                                margin: const EdgeInsets.all(10),
+                                child: Center(
+                                  child: Text.rich(
+                                    textAlign: TextAlign.center,
+                                    TextSpan(
+                                      text:
+                                          '${DateTimeHelper.getDay(state.activeAppointments[index].appointmentDate!)}\n',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        color: AppColors.primaryElement,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: DateTimeHelper.getMonthName(
+                                            state.activeAppointments[index]
+                                                .appointmentDate!,
+                                            'ru',
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: AppColors.primaryElement,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                            const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Салон красоты',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.primaryElement,
+                              const Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Стрижка',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppColors.primaryElement,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '12:00 - 13:00',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.primaryElement,
-                                    fontWeight: FontWeight.bold,
+                                  Text(
+                                    '12:00',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppColors.primaryElement,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '12:00 - 13:00',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.primaryElement,
+                                  Text(
+                                    'Мастер: Катя',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppColors.primaryElement,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
               const SliverToBoxAdapter(
                 child: SizedBox(
                   height: 10,

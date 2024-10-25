@@ -7,5 +7,7 @@ abstract interface class AppointmentRepository {
   Future<HwDayOfWeekAppointmen> getAvailableDaysOfWeek(String groomerId);
   Future<TimeSlotAppointment> getAvailableTimeSlots(String date, String groomerId);
   Future<void> createAppointment(Appointment appointment);
+  Future<List<Appointment>> getAppointmentsByUser();
+  Future<List<Appointment>> getActiveAppointmentsByUser();
   Future<bool> isAppointmentExistByDateAndPetId(DateTime date, String petId);
 }

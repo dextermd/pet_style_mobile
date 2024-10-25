@@ -20,7 +20,7 @@ class TRoundedContainer extends StatelessWidget {
     this.child,
     this.showBorder = false,
     this.borderColor = AppColors.containerBorder,
-    this.backgroundColor = AppColors.containerColor,
+    this.backgroundColor = AppColors.primarySecondBackground,
     this.padding,
     this.margin,
   });

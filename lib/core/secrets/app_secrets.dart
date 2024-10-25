@@ -1,9 +1,9 @@
 class AppSecrets {
-  static const baseUrl = 'http://192.168.18.158:3000'; // RD Home
-  //static const String baseUrl = 'http://192.168.94.23:3000'; // RD Office
+  //static const baseUrl = 'http://192.168.18.158:3000'; // RD Home
+  static const String baseUrl = 'http://192.168.94.20:3000'; // RD Office
 
-  static const String wsBaseUrl = 'http://192.168.18.158:3002'; // RD Home
-  //static const String wsBaseUrl = 'http://192.168.94.23:3002'; // RD Offi§ce
+  //static const String wsBaseUrl = 'http://192.168.18.158:3002'; // RD Home
+  static const String wsBaseUrl = 'http://192.168.94.20:3002'; // RD Offi§ce
 
   // Auth
   static const String loginUrl = "$baseUrl/api/auth/login";
@@ -29,6 +29,11 @@ class AppSecrets {
       "$baseUrl/api/appointments/create-appointment";
   static const String checkAppointmentUrl =
       "$baseUrl/api/appointments/check-appointment-by-date-and-pet-id";
+  static const String appointmentsByUserUrl =
+      "$baseUrl/api/appointments/appointments-by-user";
+      
+  static const String activeAppointmentsByUserUrl =
+      "$baseUrl/api/appointments/active-appointments-by-user";
 
   // Otp
   static const String sendSmsUrl = "$baseUrl/api/otp/send-sms";

@@ -63,6 +63,7 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
 
   @override
   Future<void> createAppointment(Appointment appointment) async {
+    logDebug(appointment.toJson().toString());
     try {
       await dio.post(
         AppSecrets.createAppointmentUrl,
@@ -78,13 +79,61 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
   }
 
   @override
-  Future<bool> isAppointmentExistByDateAndPetId(DateTime date, String petId) async {
+  Future<bool> isAppointmentExistByDateAndPetId(
+      DateTime date, String petId) async {
     try {
       final Response response = await dio.get(
         AppSecrets.checkAppointmentUrl,
         data: {'date': date.toIso8601String(), 'petId': petId},
       );
       return response.data.isNotEmpty;
+    } on DioException catch (error, st) {
+      logHandle(error.toString(), st);
+      throw ApiException.checkException(error);
+    } catch (e, st) {
+      logHandle(e.toString(), st);
+      throw ('Ошибка\nПопробуйте позже');
+    }
+  }
+
+  @override
+  Future<List<Appointment>> getAppointmentsByUser() async {
+    try {
+      final Response response = await dio.get(
+        AppSecrets.appointmentsByUserUrl,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return (response.data as List)
+            .map((e) => Appointment.fromJson(e))
+            .toList();
+      }
+      return [];
+    } on DioException catch (error, st) {
+      logHandle(error.toString(), st);
+      throw ApiException.checkException(error);
+    } catch (e, st) {
+      logHandle(e.toString(), st);
+      throw ('Ошибка\nПопробуйте позже');
+    }
+  }
+
+  @override
+  Future<List<Appointment>> getActiveAppointmentsByUser() {
+    try {
+      return dio
+          .get(
+        AppSecrets.activeAppointmentsByUserUrl,
+      )
+          .then((response) {
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          logDebug(response.data.toString());
+          return response.data
+              .map<Appointment>((e) => Appointment.fromJson(e))
+              .toList();
+        }
+        return [];
+      });
     } on DioException catch (error, st) {
       logHandle(error.toString(), st);
       throw ApiException.checkException(error);

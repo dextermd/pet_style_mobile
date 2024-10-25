@@ -35,6 +35,8 @@ class AuthRepositoryImpl implements AuthRepository {
             AppConstants.STORAGE_ACCESS_TOKEN, authResponse.accessToken!);
         await _storageServices.setString(
             AppConstants.STORAGE_REFRESH_TOKEN, authResponse.refreshToken!);
+        await _storageServices.setString(
+            AppConstants.STORAGE_USER_ID, authResponse.user?.id ?? '');
         await _storageServices.setBool(
             AppConstants.STORAGE_SHOW_ONBOARDING, false);
 
@@ -53,10 +55,24 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> logOut() async {
+  Future<void> logOutUI() async {
     try {
       await _storageServices.remove(AppConstants.STORAGE_ACCESS_TOKEN);
       await _storageServices.remove(AppConstants.STORAGE_REFRESH_TOKEN);
+      await _storageServices.remove(AppConstants.STORAGE_USER_ID);
+      await _storageServices.remove(AppConstants.STORAGE_SHOW_ONBOARDING);
+    } catch (e) {
+      logDebug(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> logOutDB() async {
+    try {
+      await _storageServices.remove(AppConstants.STORAGE_ACCESS_TOKEN);
+      await _storageServices.remove(AppConstants.STORAGE_REFRESH_TOKEN);
+      await _storageServices.remove(AppConstants.STORAGE_USER_ID);
       await _storageServices.remove(AppConstants.STORAGE_SHOW_ONBOARDING);
     } catch (e) {
       logDebug(e.toString());
@@ -116,6 +132,8 @@ class AuthRepositoryImpl implements AuthRepository {
             AppConstants.STORAGE_ACCESS_TOKEN, authResponse.accessToken!);
         await _storageServices.setString(
             AppConstants.STORAGE_REFRESH_TOKEN, authResponse.refreshToken!);
+        await _storageServices.setString(
+            AppConstants.STORAGE_USER_ID, authResponse.user?.id ?? '');
         await _storageServices.setBool(
             AppConstants.STORAGE_SHOW_ONBOARDING, false);
 

@@ -5,7 +5,8 @@ abstract interface class AuthRepository {
   Future<AuthResponse?> login(String email, String password);
   Future<AuthResponse> register(User user);
   Future<AuthResponse?> refreshToken(String oldToken);
-  Future<void> logOut();
+  Future<void> logOutUI();
+  Future<void> logOutDB();
 
   Future<AuthResponse?> googleSignIn(String idToken);
 }

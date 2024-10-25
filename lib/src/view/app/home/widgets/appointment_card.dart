@@ -24,8 +24,9 @@ class AppointmentCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: AppColors.containerColor.withOpacity(0.2)),
+          borderRadius: BorderRadius.circular(10.0),
+          color: AppColors.containerColor.withOpacity(0.2),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

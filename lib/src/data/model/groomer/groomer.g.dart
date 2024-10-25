@@ -11,7 +11,7 @@ _$GroomerImpl _$$GroomerImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String?,
       firstName: json['firstName'] as String?,
       lastName: json['lastName'] as String?,
-      rating: json['rating'] as String?,
+      rating: (json['rating'] as num?)?.toInt(),
       email: json['email'] as String?,
       phone: json['phone'] as String?,
       durationTime: json['durationTime'] as String?,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
+import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/appointment_card.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/pet_card.dart';
@@ -226,6 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 16,
                       ),
                       itemBuilder: (context, index) {
+                        logDebug(state.activeAppointments[index].toString());
                         return BaseContainer(
                           width: MediaQuery.of(context).size.width * 0.8,
                           child: Row(
@@ -263,20 +265,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
-                              const Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Стрижка',
+                                    state.activeAppointments[index].pet?.name ?? '',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: AppColors.primaryElement,
                                     ),
                                   ),
                                   Text(
-                                    '12:00',
+                                    DateTimeHelper.getFormattedTime(
+                                      state.activeAppointments[index]
+                                          .appointmentDate!,
+                                    ),
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: AppColors.primaryElement,

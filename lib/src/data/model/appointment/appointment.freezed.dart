@@ -20,15 +20,12 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Appointment {
-  @JsonKey(name: 'appointment_date')
+  @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
   DateTime? get appointmentDate => throw _privateConstructorUsedError;
   String? get location => throw _privateConstructorUsedError;
   int? get status => throw _privateConstructorUsedError;
-  @JsonKey(name: 'userId', toJson: _userToJson)
   User? get user => throw _privateConstructorUsedError;
-  @JsonKey(name: 'petId', toJson: _petToJson)
   Pet? get pet => throw _privateConstructorUsedError;
-  @JsonKey(name: 'groomerId', toJson: _groomerToJson)
   Groomer? get groomer => throw _privateConstructorUsedError;
 
   /// Serializes this Appointment to a JSON map.
@@ -48,12 +45,13 @@ abstract class $AppointmentCopyWith<$Res> {
       _$AppointmentCopyWithImpl<$Res, Appointment>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'appointment_date') DateTime? appointmentDate,
+      {@JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+      DateTime? appointmentDate,
       String? location,
       int? status,
-      @JsonKey(name: 'userId', toJson: _userToJson) User? user,
-      @JsonKey(name: 'petId', toJson: _petToJson) Pet? pet,
-      @JsonKey(name: 'groomerId', toJson: _groomerToJson) Groomer? groomer});
+      User? user,
+      Pet? pet,
+      Groomer? groomer});
 
   $UserCopyWith<$Res>? get user;
   $PetCopyWith<$Res>? get pet;
@@ -162,12 +160,13 @@ abstract class _$$AppointmentImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'appointment_date') DateTime? appointmentDate,
+      {@JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+      DateTime? appointmentDate,
       String? location,
       int? status,
-      @JsonKey(name: 'userId', toJson: _userToJson) User? user,
-      @JsonKey(name: 'petId', toJson: _petToJson) Pet? pet,
-      @JsonKey(name: 'groomerId', toJson: _groomerToJson) Groomer? groomer});
+      User? user,
+      Pet? pet,
+      Groomer? groomer});
 
   @override
   $UserCopyWith<$Res>? get user;
@@ -230,31 +229,29 @@ class __$$AppointmentImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AppointmentImpl implements _Appointment {
   const _$AppointmentImpl(
-      {@JsonKey(name: 'appointment_date') this.appointmentDate,
+      {@JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+      this.appointmentDate,
       this.location,
       this.status,
-      @JsonKey(name: 'userId', toJson: _userToJson) this.user,
-      @JsonKey(name: 'petId', toJson: _petToJson) this.pet,
-      @JsonKey(name: 'groomerId', toJson: _groomerToJson) this.groomer});
+      this.user,
+      this.pet,
+      this.groomer});
 
   factory _$AppointmentImpl.fromJson(Map<String, dynamic> json) =>
       _$$AppointmentImplFromJson(json);
 
   @override
-  @JsonKey(name: 'appointment_date')
+  @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
   final DateTime? appointmentDate;
   @override
   final String? location;
   @override
   final int? status;
   @override
-  @JsonKey(name: 'userId', toJson: _userToJson)
   final User? user;
   @override
-  @JsonKey(name: 'petId', toJson: _petToJson)
   final Pet? pet;
   @override
-  @JsonKey(name: 'groomerId', toJson: _groomerToJson)
   final Groomer? groomer;
 
   @override
@@ -300,32 +297,29 @@ class _$AppointmentImpl implements _Appointment {
 
 abstract class _Appointment implements Appointment {
   const factory _Appointment(
-      {@JsonKey(name: 'appointment_date') final DateTime? appointmentDate,
+      {@JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+      final DateTime? appointmentDate,
       final String? location,
       final int? status,
-      @JsonKey(name: 'userId', toJson: _userToJson) final User? user,
-      @JsonKey(name: 'petId', toJson: _petToJson) final Pet? pet,
-      @JsonKey(name: 'groomerId', toJson: _groomerToJson)
+      final User? user,
+      final Pet? pet,
       final Groomer? groomer}) = _$AppointmentImpl;
 
   factory _Appointment.fromJson(Map<String, dynamic> json) =
       _$AppointmentImpl.fromJson;
 
   @override
-  @JsonKey(name: 'appointment_date')
+  @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
   DateTime? get appointmentDate;
   @override
   String? get location;
   @override
   int? get status;
   @override
-  @JsonKey(name: 'userId', toJson: _userToJson)
   User? get user;
   @override
-  @JsonKey(name: 'petId', toJson: _petToJson)
   Pet? get pet;
   @override
-  @JsonKey(name: 'groomerId', toJson: _groomerToJson)
   Groomer? get groomer;
 
   /// Create a copy of Appointment

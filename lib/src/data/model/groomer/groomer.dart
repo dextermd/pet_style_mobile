@@ -9,7 +9,7 @@ class Groomer with _$Groomer {
     String? id,
     String? firstName,
     String? lastName,
-    String? rating,
+    int? rating,
     String? email,
     String? phone,
     String? durationTime,

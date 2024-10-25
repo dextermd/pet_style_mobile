@@ -23,7 +23,7 @@ mixin _$Groomer {
   String? get id => throw _privateConstructorUsedError;
   String? get firstName => throw _privateConstructorUsedError;
   String? get lastName => throw _privateConstructorUsedError;
-  String? get rating => throw _privateConstructorUsedError;
+  int? get rating => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
   String? get durationTime => throw _privateConstructorUsedError;
@@ -46,7 +46,7 @@ abstract class $GroomerCopyWith<$Res> {
       {String? id,
       String? firstName,
       String? lastName,
-      String? rating,
+      int? rating,
       String? email,
       String? phone,
       String? durationTime});
@@ -91,7 +91,7 @@ class _$GroomerCopyWithImpl<$Res, $Val extends Groomer>
       rating: freezed == rating
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -119,7 +119,7 @@ abstract class _$$GroomerImplCopyWith<$Res> implements $GroomerCopyWith<$Res> {
       {String? id,
       String? firstName,
       String? lastName,
-      String? rating,
+      int? rating,
       String? email,
       String? phone,
       String? durationTime});
@@ -162,7 +162,7 @@ class __$$GroomerImplCopyWithImpl<$Res>
       rating: freezed == rating
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -201,7 +201,7 @@ class _$GroomerImpl implements _Groomer {
   @override
   final String? lastName;
   @override
-  final String? rating;
+  final int? rating;
   @override
   final String? email;
   @override
@@ -257,7 +257,7 @@ abstract class _Groomer implements Groomer {
       {final String? id,
       final String? firstName,
       final String? lastName,
-      final String? rating,
+      final int? rating,
       final String? email,
       final String? phone,
       final String? durationTime}) = _$GroomerImpl;
@@ -271,7 +271,7 @@ abstract class _Groomer implements Groomer {
   @override
   String? get lastName;
   @override
-  String? get rating;
+  int? get rating;
   @override
   String? get email;
   @override

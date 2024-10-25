@@ -119,21 +119,17 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
   }
 
   @override
-  Future<List<Appointment>> getActiveAppointmentsByUser() {
+  Future<List<Appointment>> getActiveAppointmentsByUser() async {
     try {
-      return dio
-          .get(
-        AppSecrets.activeAppointmentsByUserUrl,
-      )
-          .then((response) {
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          logDebug(response.data.toString());
-          return response.data
-              .map<Appointment>((e) => Appointment.fromJson(e))
-              .toList();
-        }
-        return [];
-      });
+      final Response response =
+          await dio.get(AppSecrets.activeAppointmentsByUserUrl);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return (response.data as List)
+            .map((e) => Appointment.fromJson(e))
+            .toList();
+      }
+      return [];
     } on DioException catch (error, st) {
       logHandle(error.toString(), st);
       throw ApiException.checkException(error);

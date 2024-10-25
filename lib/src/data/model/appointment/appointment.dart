@@ -9,18 +9,17 @@ part 'appointment.g.dart';
 @freezed
 class Appointment with _$Appointment {
   const factory Appointment({
-    @JsonKey(name: 'appointment_date') DateTime? appointmentDate,
+    @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate) DateTime? appointmentDate,
     String? location,
     int? status,
-    @JsonKey(name: 'userId', toJson: _userToJson) User? user,
-    @JsonKey(name: 'petId', toJson: _petToJson) Pet? pet,
-    @JsonKey(name: 'groomerId', toJson: _groomerToJson) Groomer? groomer,
+    User? user,
+    Pet? pet,
+    Groomer? groomer,
   }) = _Appointment;
 
   factory Appointment.fromJson(Map<String, Object?> json) =>
       _$AppointmentFromJson(json);
 }
 
-String? _userToJson(User? user) => user?.id;
-String? _petToJson(Pet? pet) => pet?.id;
-String? _groomerToJson(Groomer? groomer) => groomer?.id;
+DateTime? _fromJsonDate(String? date) =>
+    date != null ? DateTime.parse(date).toLocal() : null;

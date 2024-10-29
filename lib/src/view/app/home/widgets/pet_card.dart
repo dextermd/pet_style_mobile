@@ -5,11 +5,12 @@ import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/widget/base_container.dart';
 import 'package:pet_style_mobile/src/view/widget/t_rounded_image.dart';
 
-
 class PetCard extends StatelessWidget {
   final String id;
   final String photo;
   final String name;
+  final String breed;
+  final String age;
   final bool isNetworkImage;
 
   const PetCard({
@@ -17,7 +18,10 @@ class PetCard extends StatelessWidget {
     required this.width,
     required this.photo,
     required this.name,
-    required this.isNetworkImage, required this.id,
+    required this.breed,
+    required this.age,
+    required this.isNetworkImage,
+    required this.id,
   });
 
   final double width;
@@ -33,8 +37,8 @@ class PetCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: TRoundedImage(
-                  width: 100,
-                  height: 100,
+                  width: 80,
+                  height: 80,
                   imageUrl: '${AppSecrets.baseUrl}/$photo',
                   applyImageRadius: true,
                   isNetworkImage: isNetworkImage,
@@ -56,22 +60,25 @@ class PetCard extends StatelessWidget {
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            '2 года',
+                            'Возраст: $age лет',
                             style: TextStyle(
                               color: AppColors.primaryText.withOpacity(0.7),
                               fontSize: 14,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Метис',
+                            breed,
                             style: TextStyle(
                               color: AppColors.primaryText.withOpacity(0.7),
                               fontSize: 14,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),

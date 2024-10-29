@@ -21,12 +21,13 @@ Groomer _$GroomerFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Groomer {
   String? get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'first_name')
   String? get firstName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'last_name')
   String? get lastName => throw _privateConstructorUsedError;
   int? get rating => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
-  String? get durationTime => throw _privateConstructorUsedError;
 
   /// Serializes this Groomer to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -44,12 +45,11 @@ abstract class $GroomerCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
-      String? firstName,
-      String? lastName,
+      @JsonKey(name: 'first_name') String? firstName,
+      @JsonKey(name: 'last_name') String? lastName,
       int? rating,
       String? email,
-      String? phone,
-      String? durationTime});
+      String? phone});
 }
 
 /// @nodoc
@@ -73,7 +73,6 @@ class _$GroomerCopyWithImpl<$Res, $Val extends Groomer>
     Object? rating = freezed,
     Object? email = freezed,
     Object? phone = freezed,
-    Object? durationTime = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -100,10 +99,6 @@ class _$GroomerCopyWithImpl<$Res, $Val extends Groomer>
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String?,
-      durationTime: freezed == durationTime
-          ? _value.durationTime
-          : durationTime // ignore: cast_nullable_to_non_nullable
-              as String?,
     ) as $Val);
   }
 }
@@ -117,12 +112,11 @@ abstract class _$$GroomerImplCopyWith<$Res> implements $GroomerCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
-      String? firstName,
-      String? lastName,
+      @JsonKey(name: 'first_name') String? firstName,
+      @JsonKey(name: 'last_name') String? lastName,
       int? rating,
       String? email,
-      String? phone,
-      String? durationTime});
+      String? phone});
 }
 
 /// @nodoc
@@ -144,7 +138,6 @@ class __$$GroomerImplCopyWithImpl<$Res>
     Object? rating = freezed,
     Object? email = freezed,
     Object? phone = freezed,
-    Object? durationTime = freezed,
   }) {
     return _then(_$GroomerImpl(
       id: freezed == id
@@ -171,10 +164,6 @@ class __$$GroomerImplCopyWithImpl<$Res>
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String?,
-      durationTime: freezed == durationTime
-          ? _value.durationTime
-          : durationTime // ignore: cast_nullable_to_non_nullable
-              as String?,
     ));
   }
 }
@@ -184,12 +173,11 @@ class __$$GroomerImplCopyWithImpl<$Res>
 class _$GroomerImpl implements _Groomer {
   const _$GroomerImpl(
       {this.id,
-      this.firstName,
-      this.lastName,
+      @JsonKey(name: 'first_name') this.firstName,
+      @JsonKey(name: 'last_name') this.lastName,
       this.rating,
       this.email,
-      this.phone,
-      this.durationTime});
+      this.phone});
 
   factory _$GroomerImpl.fromJson(Map<String, dynamic> json) =>
       _$$GroomerImplFromJson(json);
@@ -197,8 +185,10 @@ class _$GroomerImpl implements _Groomer {
   @override
   final String? id;
   @override
+  @JsonKey(name: 'first_name')
   final String? firstName;
   @override
+  @JsonKey(name: 'last_name')
   final String? lastName;
   @override
   final int? rating;
@@ -206,12 +196,10 @@ class _$GroomerImpl implements _Groomer {
   final String? email;
   @override
   final String? phone;
-  @override
-  final String? durationTime;
 
   @override
   String toString() {
-    return 'Groomer(id: $id, firstName: $firstName, lastName: $lastName, rating: $rating, email: $email, phone: $phone, durationTime: $durationTime)';
+    return 'Groomer(id: $id, firstName: $firstName, lastName: $lastName, rating: $rating, email: $email, phone: $phone)';
   }
 
   @override
@@ -226,15 +214,13 @@ class _$GroomerImpl implements _Groomer {
                 other.lastName == lastName) &&
             (identical(other.rating, rating) || other.rating == rating) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.durationTime, durationTime) ||
-                other.durationTime == durationTime));
+            (identical(other.phone, phone) || other.phone == phone));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, firstName, lastName, rating, email, phone, durationTime);
+  int get hashCode =>
+      Object.hash(runtimeType, id, firstName, lastName, rating, email, phone);
 
   /// Create a copy of Groomer
   /// with the given fields replaced by the non-null parameter values.
@@ -255,20 +241,21 @@ class _$GroomerImpl implements _Groomer {
 abstract class _Groomer implements Groomer {
   const factory _Groomer(
       {final String? id,
-      final String? firstName,
-      final String? lastName,
+      @JsonKey(name: 'first_name') final String? firstName,
+      @JsonKey(name: 'last_name') final String? lastName,
       final int? rating,
       final String? email,
-      final String? phone,
-      final String? durationTime}) = _$GroomerImpl;
+      final String? phone}) = _$GroomerImpl;
 
   factory _Groomer.fromJson(Map<String, dynamic> json) = _$GroomerImpl.fromJson;
 
   @override
   String? get id;
   @override
+  @JsonKey(name: 'first_name')
   String? get firstName;
   @override
+  @JsonKey(name: 'last_name')
   String? get lastName;
   @override
   int? get rating;
@@ -276,8 +263,6 @@ abstract class _Groomer implements Groomer {
   String? get email;
   @override
   String? get phone;
-  @override
-  String? get durationTime;
 
   /// Create a copy of Groomer
   /// with the given fields replaced by the non-null parameter values.

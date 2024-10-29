@@ -9,7 +9,7 @@ sealed class AppointmentState extends Equatable {
       const TimeSlotAppointment(availableTimeSlot: [], allTimeSlot: []);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [pets, activeDates, timeSlotAppointment];
 }
 
 final class AppointmentInitial extends AppointmentState {}

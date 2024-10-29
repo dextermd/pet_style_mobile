@@ -29,10 +29,24 @@ class DateTimeHelper {
 
   static String getMonthName(DateTime dateTime, String locale) {
     initializeDateFormatting(locale, '');
-    return DateFormat.MMMM(locale).format(dateTime); // Localized month name
+    String month = DateFormat.MMMM(locale).format(dateTime);
+    return month[0].toUpperCase() + month.substring(1).toLowerCase();
   }
 
   static String getDay(DateTime dateTime) {
     return dateTime.day.toString();
+  }
+
+  static String getAge(DateTime birthDate) {
+    final DateTime now = DateTime.now();
+    final int age = now.year - birthDate.year;
+    final int month = now.month - birthDate.month;
+    final int day = now.day - birthDate.day;
+
+    if (month < 0 || (month == 0 && day < 0)) {
+      return (age - 1).toString();
+    }
+
+    return age.toString();
   }
 }

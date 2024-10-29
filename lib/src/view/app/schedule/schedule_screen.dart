@@ -1,11 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pet_style_mobile/blocs/schedule/schedule_bloc.dart';
+import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/app/menu/app_bar_tabs.dart';
 import 'package:pet_style_mobile/src/view/app/schedule/widgets/schedule_card.dart';
 import 'package:pet_style_mobile/src/view/app/schedule/widgets/schedule_card_filtered.dart';
 
-class ScheduleScreen extends StatelessWidget {
+class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
+
+  @override
+  State<ScheduleScreen> createState() => _ScheduleScreenState();
+}
+
+class _ScheduleScreenState extends State<ScheduleScreen> {
+  @override
+  void initState() {
+    context.read<ScheduleBloc>().add(ScheduleLoad());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,43 +51,73 @@ class ScheduleScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            ListView.builder(
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return const ScheduleCard(
-                  time: '10:00',
-                  date: '10.10.2021',
-                  petName: 'Марс',
-                  breed: 'Сиба-Ину',
-                );
-              },
-            ),
-            ListView.builder(
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return const ScheduleCardFiltered(
-                  time: '10:00',
-                  date: '10.10.2021',
-                  petName: 'Марс',
-                  breed: 'Сиба-Ину',
-                );
-              },
-            ),
-            ListView.builder(
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return const ScheduleCardFiltered(
-                  isCancelled: true,
-                  time: '10:00',
-                  date: '10.10.2021',
-                  petName: 'Марс',
-                  breed: 'Сиба-Ину',
-                );
-              },
-            ),
-          ],
+        body: BlocBuilder<ScheduleBloc, ScheduleState>(
+          builder: (context, state) {
+            return TabBarView(
+              children: [
+                if (state is ScheduleLoading)
+                  const Center(child: CircularProgressIndicator())
+                else if (state is ScheduleLoaded)
+                  RefreshIndicator(
+                    onRefresh: () async {
+                      final completer = Completer();
+                      context
+                          .read<ScheduleBloc>()
+                          .add(ScheduleLoad(completer: completer));
+                      return completer.future;
+                    },
+                    child: ListView.builder(
+                      itemCount: state.active.length,
+                      itemBuilder: (context, index) {
+                        return ScheduleCard(
+                          time: DateTimeHelper.getFormattedTime(
+                              state.active[index].appointmentDate!),
+                          date: DateTimeHelper.getFormattedDate(
+                              state.active[index].appointmentDate!),
+                          petName: state.active[index].pet?.name ?? '',
+                          breed: state.active[index].pet?.breed ?? '',
+                        );
+                      },
+                    ),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (state is ScheduleLoaded)
+                  ListView.builder(
+                    itemCount: state.completed.length,
+                    itemBuilder: (context, index) {
+                      return ScheduleCardFiltered(
+                        time: DateTimeHelper.getFormattedTime(
+                            state.completed[index].appointmentDate!),
+                        date: DateTimeHelper.getFormattedDate(
+                            state.completed[index].appointmentDate!),
+                        petName: state.completed[index].pet?.name ?? '',
+                        breed: state.completed[index].pet?.breed ?? '',
+                      );
+                    },
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (state is ScheduleLoaded)
+                  ListView.builder(
+                    itemCount: state.canceled.length,
+                    itemBuilder: (context, index) {
+                      return ScheduleCardFiltered(
+                        time: DateTimeHelper.getFormattedTime(
+                            state.canceled[index].appointmentDate!),
+                        date: DateTimeHelper.getFormattedDate(
+                            state.canceled[index].appointmentDate!),
+                        petName: state.canceled[index].pet?.name ?? '',
+                        breed: state.canceled[index].pet?.breed ?? '',
+                        isCancelled: true,
+                      );
+                    },
+                  )
+                else
+                  const SizedBox.shrink(),
+              ],
+            );
+          },
         ),
       ),
     );

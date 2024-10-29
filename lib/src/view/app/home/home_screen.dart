@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
-import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/appointment_card.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/pet_card.dart';
@@ -178,10 +177,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         return const AddPetCard();
                       } else {
                         return PetCard(
-                          width: 250,
+                          width: 300,
                           id: state.pets[index].id ?? '0',
                           name: state.pets[index].name ?? '',
                           photo: state.pets[index].photo ?? '',
+                          breed: state.pets[index].breed ?? '',
+                          age: DateTimeHelper.getAge(
+                              state.pets[index].birthDate ?? DateTime.now()),
                           isNetworkImage: true,
                         );
                       }
@@ -227,12 +229,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 16,
                       ),
                       itemBuilder: (context, index) {
-                        logDebug(state.activeAppointments[index].toString());
                         return BaseContainer(
                           width: MediaQuery.of(context).size.width * 0.8,
                           child: Row(
                             children: [
                               TRoundedContainer(
+                                backgroundColor:
+                                    AppColors.containerColor.withOpacity(0.3),
                                 width: 100,
                                 height: 100,
                                 radius: 10,
@@ -245,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           '${DateTimeHelper.getDay(state.activeAppointments[index].appointmentDate!)}\n',
                                       style: TextStyle(
                                         fontSize: 24,
-                                        color: AppColors.primaryElement,
+                                        color: AppColors.primaryIcon,
                                         fontWeight: FontWeight.bold,
                                       ),
                                       children: [
@@ -257,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           style: TextStyle(
                                             fontSize: 16,
-                                            color: AppColors.primaryElement,
+                                            color: AppColors.primaryIcon,
                                           ),
                                         ),
                                       ],
@@ -270,23 +273,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    state.activeAppointments[index].pet?.name ?? '',
+                                    state.activeAppointments[index].pet?.name ??
+                                        '',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: AppColors.primaryElement,
-                                    ),
-                                  ),
-                                  Text(
-                                    DateTimeHelper.getFormattedTime(
-                                      state.activeAppointments[index]
-                                          .appointmentDate!,
-                                    ),
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppColors.primaryElement,
+                                      color: AppColors.primaryText,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    'Время: ${DateTimeHelper.getFormattedTime(state.activeAppointments[index].appointmentDate!)}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppColors.primaryElement,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
                                   Text(
                                     'Мастер: Катя',
                                     style: TextStyle(

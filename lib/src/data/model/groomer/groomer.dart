@@ -7,12 +7,11 @@ part 'groomer.g.dart';
 class Groomer with _$Groomer {
   const factory Groomer({
     String? id,
-    String? firstName,
-    String? lastName,
+    @JsonKey(name: 'first_name') String? firstName,
+    @JsonKey(name: 'last_name') String? lastName,
     int? rating,
     String? email,
     String? phone,
-    String? durationTime,
   }) = _Groomer;
 
   factory Groomer.fromJson(Map<String, Object?> json) =>

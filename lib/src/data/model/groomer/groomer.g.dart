@@ -9,21 +9,19 @@ part of 'groomer.dart';
 _$GroomerImpl _$$GroomerImplFromJson(Map<String, dynamic> json) =>
     _$GroomerImpl(
       id: json['id'] as String?,
-      firstName: json['firstName'] as String?,
-      lastName: json['lastName'] as String?,
+      firstName: json['first_name'] as String?,
+      lastName: json['last_name'] as String?,
       rating: (json['rating'] as num?)?.toInt(),
       email: json['email'] as String?,
       phone: json['phone'] as String?,
-      durationTime: json['durationTime'] as String?,
     );
 
 Map<String, dynamic> _$$GroomerImplToJson(_$GroomerImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'firstName': instance.firstName,
-      'lastName': instance.lastName,
+      'first_name': instance.firstName,
+      'last_name': instance.lastName,
       'rating': instance.rating,
       'email': instance.email,
       'phone': instance.phone,
-      'durationTime': instance.durationTime,
     };

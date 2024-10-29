@@ -5,6 +5,7 @@ import 'package:pet_style_mobile/blocs/chat/chat_bloc.dart';
 import 'package:pet_style_mobile/blocs/onboarding_bloc/onboarding_bloc.dart';
 import 'package:pet_style_mobile/blocs/otp/otp_bloc.dart';
 import 'package:pet_style_mobile/blocs/pet_form/pet_form_bloc.dart';
+import 'package:pet_style_mobile/blocs/schedule/schedule_bloc.dart';
 import 'package:pet_style_mobile/blocs/sign_in/sign_in_bloc.dart';
 import 'package:pet_style_mobile/blocs/sign_up/sign_up_bloc.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
@@ -15,7 +16,6 @@ import 'package:pet_style_mobile/src/domain/repository/chat_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/otp_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/pet_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/user_repository.dart';
-
 
 class AppBlocProviders {
   static get allBlocProviders => [
@@ -68,6 +68,12 @@ class AppBlocProviders {
           create: (context) => OtpBloc(
             GetIt.I<UserRepository>(),
             GetIt.I<OtpRepository>(),
+          ),
+        ),
+        BlocProvider<ScheduleBloc>(
+          lazy: true,
+          create: (context) => ScheduleBloc(
+            GetIt.I<AppointmentRepository>(),
           ),
         ),
       ];

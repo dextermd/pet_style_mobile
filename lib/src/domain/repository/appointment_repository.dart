@@ -10,4 +10,7 @@ abstract interface class AppointmentRepository {
   Future<List<Appointment>> getAppointmentsByUser();
   Future<List<Appointment>> getActiveAppointmentsByUser();
   Future<bool> isAppointmentExistByDateAndPetId(DateTime date, String petId);
+  Future<void> cancelAppointment(String appointmentId);
+  Future<Appointment?> isAvailableEditAppointment(String appointmentId);
+  Future<void> updateAppointment(String id, Appointment appointment);
 }

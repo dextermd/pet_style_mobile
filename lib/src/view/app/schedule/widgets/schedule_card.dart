@@ -7,6 +7,8 @@ class ScheduleCard extends StatelessWidget {
   final String date;
   final String petName;
   final String breed;
+  final void Function()? onCanceled;
+  final void Function()? onEdit;
 
   const ScheduleCard({
     super.key,
@@ -14,6 +16,8 @@ class ScheduleCard extends StatelessWidget {
     required this.date,
     required this.petName,
     required this.breed,
+    this.onCanceled,
+    this.onEdit,
   });
 
   @override
@@ -124,13 +128,13 @@ class ScheduleCard extends StatelessWidget {
                 children: [
                   MyElevatedButton(
                     text: 'Отменить',
-                    onPressed: () {},
+                    onPressed: onCanceled,
                     backgroundColor:
                         AppColors.primaryStatusError.withOpacity(0.6),
                   ),
                   MyElevatedButton(
                     text: 'Редактировать',
-                    onPressed: () {},
+                    onPressed: onEdit,
                   ),
                 ],
               ),

@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_style_mobile/blocs/appointment/appointment_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
-import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
 import 'package:pet_style_mobile/core/services/storage_services.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
@@ -22,13 +21,20 @@ import 'package:pet_style_mobile/src/view/widget/my_button.dart';
 import 'package:pet_style_mobile/src/view/widget/t_rounded_image.dart';
 
 class AppointmentScreen extends StatefulWidget {
-  const AppointmentScreen({super.key});
+  final Appointment? editAppointment;
+
+  const AppointmentScreen({
+    super.key,
+    this.editAppointment,
+  });
 
   @override
   State<AppointmentScreen> createState() => _AppointmentScreenState();
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
+  final DatePickerController _controller = DatePickerController();
+
   late StorageServices _storageServices;
 
   final totalDays = 14;
@@ -38,11 +44,20 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   @override
   void initState() {
+    super.initState();
     _storageServices = GetIt.I<StorageServices>();
     context.read<AppointmentBloc>().add(
           const GetAvailableDaysOfWeekEvent('1'),
         );
-    super.initState();
+
+    if (widget.editAppointment != null) {
+      setState(() {
+        _selectedDate = widget.editAppointment!.appointmentDate;
+        _selectedSlot =
+            DateFormat.Hm().format(widget.editAppointment!.appointmentDate!);
+        _selectedPet = Pet(id: widget.editAppointment!.pet!.id);
+      });
+    }
   }
 
   @override
@@ -50,53 +65,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     super.deactivate();
   }
 
-  void _onPetSelected(Pet pet) {
-    setState(() {
-      _selectedPet == pet ? _selectedPet = null : _selectedPet = pet;
-    });
-  }
-
-  void _onSlotSelected(String slot) {
-    if (_selectedSlot == slot) {
-      setState(() {
-        _selectedSlot = null;
-        _selectedPet = null;
-      });
-      return;
-    }
-    setState(() {
-      if (!AppointmentState.timeSlotAppointment.availableTimeSlot!
-          .contains(slot)) {
-        return;
-      }
-      _selectedPet = null;
-      _selectedSlot = slot;
-      context.read<AppointmentBloc>().add(
-            const GetPetsProfleEvent(true),
-          );
-    });
-  }
-
-  void _onDateSelected(DateTime date) {
-    if (_selectedDate == date) return;
-
-    setState(() {
-      _selectedDate = date;
-      _selectedSlot = null;
-      _selectedPet = null;
-    });
-    final justDate = DateTimeHelper.getFormattedDate(date);
-    context.read<AppointmentBloc>().add(
-          GetAvailableTimeSlotsEvent(justDate, '1'),
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarBack(
         onPressed: () {
-          Navigator.of(context).pop();
+          context.pop();
         },
         title: 'Запись на прием',
       ),
@@ -130,12 +104,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             String? userId =
                 _storageServices.getString(AppConstants.STORAGE_USER_ID);
 
-            _selectedDate = _selectedDate!.add(
-              Duration(
-                hours: int.parse(_selectedSlot!.split(':')[0]),
-                minutes: int.parse(_selectedSlot!.split(':')[1]),
-              ),
+            _selectedDate = DateTimeHelper.getDateTimeWidthTimeSlot(
+              _selectedDate!,
+              _selectedSlot!,
             );
+
             context.read<AppointmentBloc>().add(
                   CreateAppointmentEvent(
                     Appointment(
@@ -148,10 +121,38 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     ),
                   ),
                 );
+          } else if (state is AppointmentError) {
+            AppUtils.showToastError(context, '', state.message);
+          } else if (state is UpdateAppointmentSuccess) {
+            context.pushReplacement(AppRoutes.schedulePath);
+            AppUtils.showToastSuccess(
+              context,
+              'Успешно',
+              'Вы успешно обновили запись на прием\nДата и время: ${DateFormat.yMMMMd('ru').format(_selectedDate!)} ${_selectedSlot!}',
+            );
           }
         },
         child: BlocBuilder<AppointmentBloc, AppointmentState>(
           builder: (context, state) {
+            if (widget.editAppointment != null) {
+              if (AppointmentState.activeDates.isNotEmpty) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _controller.animateToSelection();
+                });
+              }
+              if (state is AppointmentInitial) {
+                final justDate = DateTimeHelper.getFormattedDate(
+                  widget.editAppointment!.appointmentDate!,
+                );
+                context.read<AppointmentBloc>().add(
+                      GetAvailableTimeSlotsEvent(justDate, '1'),
+                    );
+
+                context.read<AppointmentBloc>().add(
+                      GetPetsProfleEvent(true),
+                    );
+              }
+            }
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -232,6 +233,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       margin: const EdgeInsets.only(left: 20),
                       child: DatePicker(
                         DateTime.now(),
+                        initialSelectedDate:
+                            widget.editAppointment?.appointmentDate,
+                        controller: _controller,
                         height: 100,
                         width: 80,
                         selectionColor: AppColors.containerBorder,
@@ -270,7 +274,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         ),
                       ),
                     ),
-                  if (AppointmentState.timeSlotAppointment.availableTimeSlot!.isNotEmpty)
+                  if (AppointmentState
+                      .timeSlotAppointment.availableTimeSlot!.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 20),
@@ -296,7 +301,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         ],
                       ),
                     ),
-                  if (AppointmentState.timeSlotAppointment.availableTimeSlot!.isNotEmpty)
+                  if (AppointmentState
+                      .timeSlotAppointment.availableTimeSlot!.isNotEmpty)
                     SizedBox(
                       height: 20 *
                           (AppointmentState.timeSlotAppointment.allTimeSlot!
@@ -437,7 +443,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         itemCount: AppointmentState.pets.length,
                         itemBuilder: (context, index) {
                           final pet = AppointmentState.pets[index];
-                          final isSelected = _selectedPet == pet;
+                          final isSelected = _selectedPet?.id == pet.id;
                           return AppointmentState.pets[index].type == 'Dog'
                               ? GestureDetector(
                                   onTap: () => _onPetSelected(pet),
@@ -485,14 +491,35 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   const SizedBox(height: 25),
                   if (_selectedSlot != null && _selectedPet != null)
                     MyButton(
-                      onPressed: () {
-                        logDebug('Selected pet: $_selectedPet');
-                        logDebug('Selected slot: $_selectedSlot');
-                        context.read<AppointmentBloc>().add(
-                              const CheckPhoneNumberEvent(),
-                            );
-                      },
-                      text: 'Записаться',
+                      onPressed: widget.editAppointment != null
+                          ? () {
+                              _selectedDate =
+                                  DateTimeHelper.getDateTimeWidthTimeSlot(
+                                _selectedDate!,
+                                _selectedSlot!,
+                              );
+                              context.read<AppointmentBloc>().add(
+                                    UpdateAppointmentEvent(
+                                      widget.editAppointment?.id ?? '',
+                                      Appointment(
+                                        appointmentDate: _selectedDate,
+                                        location: 'Home',
+                                        groomer: Groomer(id: '1'),
+                                        user: widget.editAppointment!.user,
+                                        status: 0,
+                                        pet: Pet(id: _selectedPet!.id),
+                                      ),
+                                    ),
+                                  );
+                            }
+                          : () {
+                              context.read<AppointmentBloc>().add(
+                                    const CheckPhoneNumberEvent(),
+                                  );
+                            },
+                      text: widget.editAppointment != null
+                          ? 'Обновить'
+                          : 'Записаться',
                       width: MediaQuery.of(context).size.width * 0.8,
                     ),
                 ],
@@ -502,5 +529,47 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         ),
       ),
     );
+  }
+
+  void _onPetSelected(Pet pet) {
+    setState(() {
+      _selectedPet == pet ? _selectedPet = null : _selectedPet = pet;
+    });
+  }
+
+  void _onSlotSelected(String slot) {
+    if (_selectedSlot == slot) {
+      setState(() {
+        _selectedSlot = null;
+        _selectedPet = null;
+      });
+      return;
+    }
+    setState(() {
+      if (!AppointmentState.timeSlotAppointment.availableTimeSlot!
+          .contains(slot)) {
+        return;
+      }
+      _selectedPet = null;
+      _selectedSlot = slot;
+      context.read<AppointmentBloc>().add(
+            const GetPetsProfleEvent(true),
+          );
+    });
+  }
+
+  void _onDateSelected(DateTime date) {
+    if (_selectedDate == date) return;
+
+    setState(() {
+      _selectedDate = date;
+      _selectedSlot = null;
+      _selectedPet = null;
+    });
+
+    final justDate = DateTimeHelper.getFormattedDate(date);
+    context.read<AppointmentBloc>().add(
+          GetAvailableTimeSlotsEvent(justDate, '1'),
+        );
   }
 }

@@ -33,6 +33,9 @@ class AppRoutes {
   static const String schedule = 'schedule';
   static const String schedulePath = '/schedule';
 
+  static const String editSchedule = 'edit_schedule';
+  static const String editSchedulePath = '$schedulePath/$editSchedule';
+
   static const String chat = 'chat';
   static const String chatPath = '/chat';
 

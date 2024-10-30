@@ -49,4 +49,16 @@ class DateTimeHelper {
 
     return age.toString();
   }
+
+  static DateTime getDateTimeWidthTimeSlot(DateTime date, String timeSlot) {
+    final List<String> timeSlotList = timeSlot.split(':');
+
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+      int.parse(timeSlotList[0]),
+      int.parse(timeSlotList[1]),
+    );
+  }
 }

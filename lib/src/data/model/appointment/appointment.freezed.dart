@@ -20,6 +20,7 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Appointment {
+  String? get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
   DateTime? get appointmentDate => throw _privateConstructorUsedError;
   String? get location => throw _privateConstructorUsedError;
@@ -45,7 +46,8 @@ abstract class $AppointmentCopyWith<$Res> {
       _$AppointmentCopyWithImpl<$Res, Appointment>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+      {String? id,
+      @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
       DateTime? appointmentDate,
       String? location,
       int? status,
@@ -73,6 +75,7 @@ class _$AppointmentCopyWithImpl<$Res, $Val extends Appointment>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? appointmentDate = freezed,
     Object? location = freezed,
     Object? status = freezed,
@@ -81,6 +84,10 @@ class _$AppointmentCopyWithImpl<$Res, $Val extends Appointment>
     Object? groomer = freezed,
   }) {
     return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       appointmentDate: freezed == appointmentDate
           ? _value.appointmentDate
           : appointmentDate // ignore: cast_nullable_to_non_nullable
@@ -160,7 +167,8 @@ abstract class _$$AppointmentImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+      {String? id,
+      @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
       DateTime? appointmentDate,
       String? location,
       int? status,
@@ -189,6 +197,7 @@ class __$$AppointmentImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? appointmentDate = freezed,
     Object? location = freezed,
     Object? status = freezed,
@@ -197,6 +206,10 @@ class __$$AppointmentImplCopyWithImpl<$Res>
     Object? groomer = freezed,
   }) {
     return _then(_$AppointmentImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       appointmentDate: freezed == appointmentDate
           ? _value.appointmentDate
           : appointmentDate // ignore: cast_nullable_to_non_nullable
@@ -229,7 +242,8 @@ class __$$AppointmentImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AppointmentImpl implements _Appointment {
   const _$AppointmentImpl(
-      {@JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+      {this.id,
+      @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
       this.appointmentDate,
       this.location,
       this.status,
@@ -240,6 +254,8 @@ class _$AppointmentImpl implements _Appointment {
   factory _$AppointmentImpl.fromJson(Map<String, dynamic> json) =>
       _$$AppointmentImplFromJson(json);
 
+  @override
+  final String? id;
   @override
   @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
   final DateTime? appointmentDate;
@@ -256,7 +272,7 @@ class _$AppointmentImpl implements _Appointment {
 
   @override
   String toString() {
-    return 'Appointment(appointmentDate: $appointmentDate, location: $location, status: $status, user: $user, pet: $pet, groomer: $groomer)';
+    return 'Appointment(id: $id, appointmentDate: $appointmentDate, location: $location, status: $status, user: $user, pet: $pet, groomer: $groomer)';
   }
 
   @override
@@ -264,6 +280,7 @@ class _$AppointmentImpl implements _Appointment {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AppointmentImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.appointmentDate, appointmentDate) ||
                 other.appointmentDate == appointmentDate) &&
             (identical(other.location, location) ||
@@ -277,7 +294,7 @@ class _$AppointmentImpl implements _Appointment {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, appointmentDate, location, status, user, pet, groomer);
+      runtimeType, id, appointmentDate, location, status, user, pet, groomer);
 
   /// Create a copy of Appointment
   /// with the given fields replaced by the non-null parameter values.
@@ -297,7 +314,8 @@ class _$AppointmentImpl implements _Appointment {
 
 abstract class _Appointment implements Appointment {
   const factory _Appointment(
-      {@JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+      {final String? id,
+      @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
       final DateTime? appointmentDate,
       final String? location,
       final int? status,
@@ -308,6 +326,8 @@ abstract class _Appointment implements Appointment {
   factory _Appointment.fromJson(Map<String, dynamic> json) =
       _$AppointmentImpl.fromJson;
 
+  @override
+  String? get id;
   @override
   @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
   DateTime? get appointmentDate;

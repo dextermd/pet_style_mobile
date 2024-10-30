@@ -9,7 +9,9 @@ part 'appointment.g.dart';
 @freezed
 class Appointment with _$Appointment {
   const factory Appointment({
-    @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate) DateTime? appointmentDate,
+    String? id,
+    @JsonKey(name: 'appointment_date', fromJson: _fromJsonDate)
+    DateTime? appointmentDate,
     String? location,
     int? status,
     User? user,

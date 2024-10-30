@@ -21,6 +21,7 @@ class AppSecrets {
   static const String petsUrl = "$baseUrl/api/pets";
 
   // Appointments
+  static const String appointmentUrl = "$baseUrl/api/appointments";
   static const String availableDaysOfWeekUrl =
       "$baseUrl/api/appointments/available-days-of-week";
   static const String availableSlotsUrl =
@@ -31,9 +32,12 @@ class AppSecrets {
       "$baseUrl/api/appointments/check-appointment-by-date-and-pet-id";
   static const String appointmentsByUserUrl =
       "$baseUrl/api/appointments/appointments-by-user";
-      
   static const String activeAppointmentsByUserUrl =
       "$baseUrl/api/appointments/active-appointments-by-user";
+  static const String cancelAppointmentUrl =
+      "$baseUrl/api/appointments/cancel-appointment";
+  static const String isAvailableEditAppointmentUrl =
+      "$baseUrl/api/appointments/is-available-edit-appointment";
 
   // Otp
   static const String sendSmsUrl = "$baseUrl/api/otp/send-sms";

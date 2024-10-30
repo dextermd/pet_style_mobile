@@ -70,3 +70,14 @@ final class CreateAppointmentSuccess extends AppointmentState {}
 final class AppointmentExist extends AppointmentState {}
 
 final class AppointmentNotExist extends AppointmentState {}
+
+final class UpdateAppointmentSuccess extends AppointmentState {}
+
+final class UpdateAppointmentError extends AppointmentState {
+  final String message;
+
+  const UpdateAppointmentError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

@@ -70,3 +70,14 @@ class CheckIfExistingAppointmentEvent extends AppointmentEvent {
   @override
   List<Object> get props => [petId, date];
 }
+
+// update appointment
+class UpdateAppointmentEvent extends AppointmentEvent {
+  final String id;
+  final Appointment appointment;
+
+  const UpdateAppointmentEvent(this.id, this.appointment);
+
+  @override
+  List<Object> get props => [appointment];
+}

@@ -63,10 +63,9 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
 
   @override
   Future<void> createAppointment(Appointment appointment) async {
-    logDebug(appointment.toJson().toString());
     try {
       await dio.post(
-        AppSecrets.createAppointmentUrl,
+        AppSecrets.appointmentUrl,
         data: appointment.toJson(),
       );
     } on DioException catch (error, st) {
@@ -130,6 +129,58 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
             .toList();
       }
       return [];
+    } on DioException catch (error, st) {
+      logHandle(error.toString(), st);
+      throw ApiException.checkException(error);
+    } catch (e, st) {
+      logHandle(e.toString(), st);
+      throw ('Ошибка\nПопробуйте позже');
+    }
+  }
+
+  @override
+  Future<void> cancelAppointment(String appointmentId) async {
+    try {
+      await dio.patch('${AppSecrets.cancelAppointmentUrl}/$appointmentId');
+    } on DioException catch (error, st) {
+      logHandle(error.toString(), st);
+      throw ApiException.checkException(error);
+    } catch (e, st) {
+      logHandle(e.toString(), st);
+      throw ('Ошибка\nПопробуйте позже');
+    }
+  }
+
+  @override
+  Future<Appointment?> isAvailableEditAppointment(String appointmentId) async {
+    try {
+      final Response response = await dio.get(
+        '${AppSecrets.isAvailableEditAppointmentUrl}/$appointmentId',
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.data.isNotEmpty) {
+          return Appointment.fromJson(response.data);
+        } else {
+          return null;
+        }
+      }
+      return null;
+    } on DioException catch (error, st) {
+      logHandle(error.toString(), st);
+      throw ApiException.checkException(error);
+    } catch (e, st) {
+      logHandle(e.toString(), st);
+      throw ('Ошибка\nПопробуйте позже');
+    }
+  }
+
+  @override
+  Future<void> updateAppointment(String id, Appointment appointment) async {
+    try {
+      await dio.patch(
+        '${AppSecrets.appointmentUrl}/$id',
+        data: appointment.toJson(),
+      );
     } on DioException catch (error, st) {
       logHandle(error.toString(), st);
       throw ApiException.checkException(error);

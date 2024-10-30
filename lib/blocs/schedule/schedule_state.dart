@@ -1,7 +1,6 @@
 part of 'schedule_bloc.dart';
 
 sealed class ScheduleState extends Equatable {
-
   const ScheduleState();
 
   @override
@@ -31,3 +30,30 @@ final class ScheduleError extends ScheduleState {
   @override
   List<Object> get props => [message];
 }
+
+final class ScheduleCanceling extends ScheduleState {}
+
+final class ScheduleCanceled extends ScheduleState {}
+
+final class ScheduleCancelError extends ScheduleState {
+  final String canceledId;
+  final String message;
+
+  const ScheduleCancelError(this.message, this.canceledId);
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class EditChecking extends ScheduleState {}
+
+final class EditingAvailable extends ScheduleState {
+  final Appointment appointment;
+
+  const EditingAvailable(this.appointment);
+
+  @override
+  List<Object> get props => [appointment];
+}
+
+final class EditingNotAvailable extends ScheduleState {}

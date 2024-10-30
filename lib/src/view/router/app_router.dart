@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/services/storage_services.dart';
+import 'package:pet_style_mobile/src/data/model/appointment/appointment.dart';
 import 'package:pet_style_mobile/src/view/app/appointment/appointment_screen.dart';
 import 'package:pet_style_mobile/src/view/app/auth/sign_in/sign_in_screen.dart';
 import 'package:pet_style_mobile/src/view/app/auth/sign_up/sign_up_screen.dart';
@@ -106,6 +107,16 @@ class AppRouter {
             name: AppRoutes.schedule,
             parentNavigatorKey: _shellNavigatorKey,
             builder: (context, state) => const ScheduleScreen(),
+            routes: [
+              GoRoute(
+                  path: AppRoutes.editSchedule,
+                  name: AppRoutes.editSchedule,
+                  builder: (context, state) {
+                    final Appointment? editAppointment =
+                        state.extra as Appointment?;
+                    return AppointmentScreen(editAppointment: editAppointment);
+                  }),
+            ],
           ),
           GoRoute(
             path: AppRoutes.chatPath,

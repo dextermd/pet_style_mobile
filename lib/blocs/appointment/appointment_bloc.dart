@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +28,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<CreateAppointmentEvent>(_onCreateAppointment);
     on<AddPhoneNumberExistStateEvent>(_onAddPhoneNumberExistState);
     on<CheckIfExistingAppointmentEvent>(_onCheckIfExistingAppointment);
+    on<UpdateAppointmentEvent>(_onUpdateAppointment);
   }
 
   void _onGetPetsProfile(
@@ -85,7 +85,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         event.date,
         event.groomerId,
       );
-      logDebug('timeSlotAppointment: $timeSlotAppointment');
+
       if (timeSlotAppointment.availableTimeSlot!.isEmpty) {
         emit(SlotsEmpty());
       } else {
@@ -112,7 +112,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
           .contains(date.weekday)) {
         activeDates.add(date);
       }
-      logDebug('activeDates: $activeDates');
     }
 
     if (activeDates.isEmpty) {
@@ -160,14 +159,30 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     emit(PhoneNumberExist());
   }
 
-  FutureOr<void> _onCheckIfExistingAppointment(CheckIfExistingAppointmentEvent event, Emitter<AppointmentState> emit) async {
+  FutureOr<void> _onCheckIfExistingAppointment(
+      CheckIfExistingAppointmentEvent event,
+      Emitter<AppointmentState> emit) async {
     try {
-      final bool isExist = await _appointmentRepository.isAppointmentExistByDateAndPetId(event.date, event.petId);
+      final bool isExist = await _appointmentRepository
+          .isAppointmentExistByDateAndPetId(event.date, event.petId);
       if (isExist) {
         emit(AppointmentExist());
       } else {
         emit(AppointmentNotExist());
       }
+    } catch (e) {
+      emit(AppointmentError(e.toString()));
+    }
+  }
+
+  FutureOr<void> _onUpdateAppointment(
+      UpdateAppointmentEvent event, Emitter<AppointmentState> emit) async {
+    try {
+      await _appointmentRepository.updateAppointment(
+        event.id,
+        event.appointment,
+      );
+      emit(UpdateAppointmentSuccess());
     } catch (e) {
       emit(AppointmentError(e.toString()));
     }

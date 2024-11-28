@@ -81,3 +81,14 @@ class UpdateAppointmentEvent extends AppointmentEvent {
   @override
   List<Object> get props => [appointment];
 }
+
+class SendNotificationToGroomerEvent extends AppointmentEvent {
+  final String groomerId;
+  final String title;
+  final String body;
+
+  const SendNotificationToGroomerEvent(this.groomerId, this.title, this.body);
+
+  @override
+  List<Object> get props => [groomerId, title, body];
+}

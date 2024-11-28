@@ -1,17 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:pet_style_mobile/core/services/firebase_messaging_services.dart';
 import 'package:pet_style_mobile/core/services/interceptors/auth_interceptor.dart';
+import 'package:pet_style_mobile/core/services/media_services.dart';
 import 'package:pet_style_mobile/core/services/socket_service.dart';
 import 'package:pet_style_mobile/src/data/repository/appointment_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/auth_repository_impl.dart';
-import 'package:pet_style_mobile/src/data/repository/chat_repository_impl.dart';
+import 'package:pet_style_mobile/src/data/repository/device_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/otp_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/pet_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/user_repository_impl.dart';
 import 'package:pet_style_mobile/src/domain/repository/appointment_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/auth_repository.dart';
-import 'package:pet_style_mobile/src/domain/repository/chat_repository.dart';
+import 'package:pet_style_mobile/src/domain/repository/device_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/otp_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/pet_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/user_repository.dart';
@@ -57,8 +59,8 @@ class DependencyInjector {
       () => OtpRepositoryImpl(dio: dio),
     );
 
-    _getIt.registerLazySingleton<ChatRepository>(
-      () => ChatRepositoryImpl(dio: dio),
+    _getIt.registerLazySingleton<DeviceRepository>(
+      () => DeviceRepositoryImpl(dio: dio),
     );
 
     _getIt.registerLazySingleton<InternetConnection>(
@@ -67,6 +69,14 @@ class DependencyInjector {
 
     _getIt.registerLazySingleton<SocketService>(
       () => SocketService(),
+    );
+
+    _getIt.registerSingleton<MediaServices>(
+      MediaServices(),
+    );
+
+    _getIt.registerSingleton<FirebaseMessagingServices>(
+      FirebaseMessagingServices(dio: dio),
     );
 
     dio.interceptors.add(AuthInterceptor(dio: dio));

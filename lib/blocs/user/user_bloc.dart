@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +18,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc(this._userRepository, this._appointmentRepository)
       : super(UserInitial()) {
     on<FetchUserData>((event, emit) async {
-      emit(UserLoading());
+      if (state is! UserLoaded) {
+        emit(UserLoading());
+      }
       try {
         final user = await _userRepository.getUserData();
         final List<Appointment> activeAppointments =
@@ -31,6 +34,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       } catch (e) {
         emit(UserError(e.toString()));
+      } finally {
+        event.completer?.complete();
       }
     });
 
@@ -46,6 +51,24 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       } catch (e) {
         emit(UserError(e.toString()));
+      }
+    });
+
+    on<UpdateUserDataEvent>((event, emit) async {
+      try {
+        await _userRepository.updateUserData(event.user, event.newPassword);
+        emit(UserUpdated());
+      } catch (e) {
+        emit(UpdateUserDataError(e.toString()));
+      }
+    });
+
+    on<UpdateImageEvent>((event, emit) async {
+      try {
+        await _userRepository.updateImage(event.image);
+        emit(UserUpdated());
+      } catch (e) {
+        emit(UpdateImageError(e.toString()));
       }
     });
   }

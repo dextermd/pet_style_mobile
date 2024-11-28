@@ -15,6 +15,7 @@ import 'package:pet_style_mobile/src/view/app/otp/otp_code/otp_code_screen.dart'
 import 'package:pet_style_mobile/src/view/app/otp/phone_verification/phone_verification_screen.dart';
 import 'package:pet_style_mobile/src/view/app/pet_form/pet_form_screen.dart';
 import 'package:pet_style_mobile/src/view/app/schedule/schedule_screen.dart';
+import 'package:pet_style_mobile/src/view/app/setting/edit_profile/edit_profile_screen.dart';
 import 'package:pet_style_mobile/src/view/app/setting/setting_screen.dart';
 import 'package:pet_style_mobile/src/view/app/splash/splash_screen.dart';
 import 'package:pet_style_mobile/src/view/router/app_routes.dart';
@@ -128,6 +129,13 @@ class AppRouter {
             path: AppRoutes.settingPath,
             name: AppRoutes.setting,
             builder: (context, state) => const SettingScreen(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.editProfile,
+                name: AppRoutes.editProfile,
+                builder: (context, state) => const EditProfileScreen(),
+              ),
+            ],
           ),
         ],
       )
@@ -146,6 +154,8 @@ class AppRouter {
         AppRoutes.petFormPath,
         AppRoutes.phoneVerificationPath,
         AppRoutes.otpCodePath,
+        AppRoutes.editSchedulePath,
+        AppRoutes.editProfilePath,
       ];
       if (!isLoggedIn && protectedRoutes.contains(state.matchedLocation)) {
         return AppRoutes.signInPath;

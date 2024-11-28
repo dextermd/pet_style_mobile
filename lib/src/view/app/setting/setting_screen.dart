@@ -3,13 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_style_mobile/blocs/sign_in/sign_in_bloc.dart';
+import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
+import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
+import 'package:pet_style_mobile/core/services/media_services.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
+import 'package:pet_style_mobile/src/utils/app_utils.dart';
 import 'package:pet_style_mobile/src/view/app/menu/app_bar_back.dart';
+import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 import 'package:pet_style_mobile/src/view/widget/my_button.dart';
-
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -19,16 +24,15 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  late MediaServices _mediaServices;
+
   File? image;
 
-  void selectImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      image = File(pickedFile.path);
-      setState(() {});
-    }
+  @override
+  void initState() {
+    super.initState();
+    _mediaServices = GetIt.I<MediaServices>();
+    context.read<UserBloc>().add(const FetchUserData());
   }
 
   @override
@@ -41,83 +45,127 @@ class _SettingScreenState extends State<SettingScreen> {
         title: 'Настройки',
       ),
       body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.h),
-          child: Column(
-            children: [
-              SizedBox(height: 10.h),
-              InkWell(
-                onTap: () => selectImage(),
-                child: image == null
-                    ? SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.asset(
-                                'assets/images/default_profile.png')),
-                      )
-                    : CircleAvatar(
-                        backgroundImage: FileImage(image!),
-                        radius: 50,
+        child: BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if (state is UpdateUserDataError) {
+              AppUtils.showToastError(context, '', state.message);
+              context.read<UserBloc>().add(const FetchUserData());
+            }
+            if (state is UserUpdated) {
+              context.pop();
+              context.read<UserBloc>().add(const FetchUserData());
+              AppUtils.showToastSuccess(context, 'Успешно', 'Профиль обновлен');
+            }
+            if (state is UpdateImageError) {
+              context.read<UserBloc>().add(const FetchUserData());
+              AppUtils.showToastError(context, '', state.message);
+            }
+          },
+          child: BlocBuilder<UserBloc, UserState>(
+            builder: (context, state) {
+              if (state is UserLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is UserLoaded) {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20.h),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10.h),
+                      InkWell(
+                        onTap: () async {
+                          _mediaServices.getImageFromGallery().then((value) {
+                            if (value != null) {
+                              setState(() {
+                                image = value;
+                              });
+                              if (context.mounted) {
+                                context
+                                    .read<UserBloc>()
+                                    .add(UpdateImageEvent(image!));
+                              }
+                            }
+                          });
+                        },
+                        child: image == null
+                            ? state.user.image == null ||
+                                    state.user.image!.isEmpty
+                                ? CircleAvatar(
+                                    backgroundColor: AppColors.primaryElement,
+                                    radius: 75,
+                                    child: Icon(
+                                      Icons.person,
+                                      color: AppColors.whiteText,
+                                      size: 75,
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage: NetworkImage(state
+                                                .user.image
+                                                ?.contains('http') ==
+                                            true
+                                        ? state.user.image ?? ''
+                                        : '${AppSecrets.baseUrl}/${state.user.image}'),
+                                    radius: 75,
+                                  )
+                            : CircleAvatar(
+                                backgroundImage: FileImage(image!),
+                                radius: 75,
+                              ),
                       ),
-              ),
-              SizedBox(height: 10.h),
-              Text(
-                'Profile Name',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text(
-                'profileemail@gmail.com',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              SizedBox(height: 20.h),
-              MyButton(
-                width: 200.w,
-                text: 'Edit Profile',
-                onPressed: () {},
-              ),
-              SizedBox(height: 20.h),
-              const Divider(
-                  color: AppColors.containerBorder, height: 1, thickness: 1),
-              SizedBox(height: 20.h),
-              ListTileMenu(
-                title: 'Settings',
-                icon: Icon(Icons.logout,
-                    color: AppColors.whiteText.withOpacity(0.8)),
-                onPress: () {},
-              ),
-              const SizedBox(height: 5),
-              ListTileMenu(
-                title: 'Settings',
-                icon: Icon(Icons.logout,
-                    color: AppColors.whiteText.withOpacity(0.8)),
-                onPress: () {},
-              ),
-              const SizedBox(height: 5),
-              ListTileMenu(
-                title: 'Settings',
-                icon: Icon(Icons.logout,
-                    color: AppColors.whiteText.withOpacity(0.8)),
-                onPress: () {},
-              ),
-              const SizedBox(height: 20),
-              const Divider(
-                  color: AppColors.containerBorder, height: 1, thickness: 1),
-              const SizedBox(height: 20),
-              ListTileMenu(
-                title: 'Выход',
-                icon: Icon(Icons.logout,
-                    color: AppColors.whiteText.withOpacity(0.8)),
-                onPress: () {
-                  context.read<SignInBloc>().add(const SignOutRequired());
-                  const Duration(seconds: 1);
-                  context.go('/onboarding');
-                },
-                textColor: AppColors.primaryStatusError,
-                endIcon: false,
-              ),
-            ],
+                      SizedBox(height: 10.h),
+                      Text(
+                        state.user.name ?? '',
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: AppColors.primaryText.withOpacity(0.8),
+                                ),
+                      ),
+                      Text(
+                        state.user.email ?? '',
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: AppColors.primaryText.withOpacity(0.8),
+                            ),
+                      ),
+                      SizedBox(height: 20.h),
+                      MyButton(
+                        width: 200.w,
+                        text: 'Edit Profile',
+                        onPressed: () {
+                          context.pushNamed(AppRoutes.editProfile);
+                        },
+                      ),
+                      SizedBox(height: 20.h),
+                      const Divider(
+                          color: AppColors.containerBorder,
+                          height: 1,
+                          thickness: 1),
+                      SizedBox(height: 20.h),
+                      ListTileMenu(
+                        title: 'Выход',
+                        icon: Icon(
+                          Icons.logout,
+                          color: AppColors.whiteText,
+                          size: 18,
+                        ),
+                        onPress: () {
+                          context
+                              .read<SignInBloc>()
+                              .add(const SignOutRequired());
+                          const Duration(seconds: 1);
+                          context.go('/onboarding');
+                        },
+                        textColor: AppColors.primaryText,
+                        endIcon: false,
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return Container();
+            },
           ),
         ),
       ),
@@ -158,21 +206,22 @@ class ListTileMenu extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.titleMedium?.apply(color: textColor),
+        style: Theme.of(context).textTheme.bodyLarge?.apply(color: textColor),
       ),
       trailing: endIcon
           ? Container(
-              width: 30,
-              height: 30,
+              width: 24,
+              height: 24,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: AppColors.primaryEnabledBorder.withOpacity(0.1),
               ),
               child: const Icon(
                 Icons.arrow_forward_ios,
-                size: 18,
+                size: 16,
                 color: AppColors.primaryText,
-              ))
+              ),
+            )
           : null,
     );
   }

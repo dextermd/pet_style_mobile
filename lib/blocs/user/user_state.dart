@@ -35,3 +35,16 @@ final class SenderLoaded extends UserState {
   @override
   List<Object> get props => [user];
 }
+
+final class UpdateUserDataError extends UserState {
+  final String message;
+  const UpdateUserDataError(this.message);
+}
+
+final class UserUpdated extends UserState {}
+
+
+final class UpdateImageError extends UserState {
+  final String message;
+  const UpdateImageError(this.message);
+}

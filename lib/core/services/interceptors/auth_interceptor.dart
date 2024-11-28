@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/services/storage_services.dart';
 import 'package:pet_style_mobile/core/values/constants.dart';
 import 'package:pet_style_mobile/src/data/model/auth_response/auth_response.dart';
@@ -31,8 +32,10 @@ class AuthInterceptor implements InterceptorsWrapper {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
+      logDebug('Error 401');
       final refreshToken =
           _storageServices.getString(AppConstants.STORAGE_REFRESH_TOKEN);
+      logDebug('refreshToken $refreshToken');
       if (refreshToken != null) {
         try {
           final AuthResponse? newTokens =
@@ -43,6 +46,7 @@ class AuthInterceptor implements InterceptorsWrapper {
               headers: {
                 ...err.requestOptions.headers,
                 'Authorization': '${newTokens.accessToken}',
+                'Content-Type': 'multipart/form-data',
               },
             );
 

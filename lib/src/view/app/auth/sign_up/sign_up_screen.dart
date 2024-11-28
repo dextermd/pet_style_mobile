@@ -86,6 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             _emailFocusNode.unfocus();
             _passwordFocusNode.unfocus();
             _confirmPasswordFocusNode.unfocus();
+            
           },
           child: SafeArea(
             child: SingleChildScrollView(

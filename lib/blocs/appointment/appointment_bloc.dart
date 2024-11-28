@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pet_style_mobile/core/helpers/log_helper.dart';
+import 'package:pet_style_mobile/core/services/firebase_messaging_services.dart';
 import 'package:pet_style_mobile/src/data/model/appointment/appointment.dart';
 import 'package:pet_style_mobile/src/data/model/appointment/hw_day_of_week_appointmen.dart';
 import 'package:pet_style_mobile/src/data/model/appointment/time_slot_appointment.dart';
@@ -29,6 +31,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AddPhoneNumberExistStateEvent>(_onAddPhoneNumberExistState);
     on<CheckIfExistingAppointmentEvent>(_onCheckIfExistingAppointment);
     on<UpdateAppointmentEvent>(_onUpdateAppointment);
+    on<SendNotificationToGroomerEvent>(_onSendNotificationToGroomer);
   }
 
   void _onGetPetsProfile(
@@ -177,6 +180,9 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
   FutureOr<void> _onUpdateAppointment(
       UpdateAppointmentEvent event, Emitter<AppointmentState> emit) async {
+    if (state is! AppointmentInitial) {
+      emit(UpdateAppointmentLoading());
+    }
     try {
       await _appointmentRepository.updateAppointment(
         event.id,
@@ -186,5 +192,17 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     } catch (e) {
       emit(AppointmentError(e.toString()));
     }
+  }
+
+  FutureOr<void> _onSendNotificationToGroomer(
+      SendNotificationToGroomerEvent event,
+      Emitter<AppointmentState> emit) async {
+    final FirebaseMessagingServices firebaseMessagingServices =
+        GetIt.I<FirebaseMessagingServices>();
+
+    await firebaseMessagingServices.sendNotificationToGroomer(
+        'dDF7sbRrRxW8SudbcmLXC2:APA91bHUoV7SzWhM0ZRK2M0uJwGoB0H3vmZkPt8pIRTo887d7C86Ho6rYuwvwtfNuKQUp3hmiedadHp6bCzPoE6RXKkDcGy8L84r8ZJ_ct_J2rMgIXIMCxA',
+        'title',
+        'body');
   }
 }

@@ -25,7 +25,8 @@ class AppRoutes {
   static const String appointmentPath = '$homePath/$appointment';
 
   static const String phoneVerification = 'phone_verification';
-  static const String phoneVerificationPath = '$appointmentPath/$phoneVerification';
+  static const String phoneVerificationPath =
+      '$appointmentPath/$phoneVerification';
 
   static const String otpCode = 'otp_code';
   static const String otpCodePath = '$phoneVerificationPath/$otpCode';
@@ -42,4 +43,6 @@ class AppRoutes {
   static const String setting = 'setting';
   static const String settingPath = '/setting';
 
+  static const String editProfile = 'edit_profile';
+  static const String editProfilePath = '$settingPath/$editProfile';
 }

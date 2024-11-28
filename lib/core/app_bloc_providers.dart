@@ -12,7 +12,6 @@ import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/services/socket_service.dart';
 import 'package:pet_style_mobile/src/domain/repository/appointment_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/auth_repository.dart';
-import 'package:pet_style_mobile/src/domain/repository/chat_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/otp_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/pet_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/user_repository.dart';
@@ -58,11 +57,9 @@ class AppBlocProviders {
         BlocProvider<ChatBloc>(
           lazy: true,
           create: (context) => ChatBloc(
-            GetIt.I<ChatRepository>(),
             GetIt.I<SocketService>(),
           ),
         ),
-        //otp
         BlocProvider<OtpBloc>(
           lazy: true,
           create: (context) => OtpBloc(

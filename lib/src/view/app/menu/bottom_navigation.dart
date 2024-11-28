@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
+import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key, this.child});
@@ -19,13 +20,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
   void changeTab(int index) {
     switch (index) {
       case 0:
-        context.goNamed('home');
+        context.pushNamed('home');
         break;
       case 1:
-        context.goNamed('chat');
+        context.pushNamed('chat');
         break;
       case 2:
-        context.goNamed('schedule');
+        context.pushNamed('schedule');
         break;
       case 3:
         context.pushNamed('setting');
@@ -45,9 +46,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     final String currentUrl = GoRouterState.of(context).uri.toString();
     final List<String> hideBottomNavBarPaths = [
-      '/setting',
-      '/home/appointment/phone_verification',
-      '/home/appointment/phone_verification/otp_code',
+      AppRoutes.settingPath,
+      AppRoutes.editProfilePath,
+      AppRoutes.phoneVerificationPath,
+      AppRoutes.otpCodePath,
     ];
 
     bool shouldShowBottomNavBar = !hideBottomNavBarPaths.contains(currentUrl);

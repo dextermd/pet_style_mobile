@@ -71,6 +71,9 @@ final class AppointmentExist extends AppointmentState {}
 
 final class AppointmentNotExist extends AppointmentState {}
 
+
+final class UpdateAppointmentLoading extends AppointmentState {}
+
 final class UpdateAppointmentSuccess extends AppointmentState {}
 
 final class UpdateAppointmentError extends AppointmentState {

@@ -62,7 +62,6 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     });
     on<SignOutRequired>((event, emit) async {
       await _authRepository.logOutDB();
-      await _googleSignIn.signOut();
     });
   }
 }

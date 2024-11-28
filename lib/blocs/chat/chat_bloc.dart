@@ -5,16 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/services/socket_service.dart';
 import 'package:pet_style_mobile/src/domain/entity/chat_message/message_entity.dart';
-import 'package:pet_style_mobile/src/domain/repository/chat_repository.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final ChatRepository petRepository;
   final SocketService socketService;
 
-  ChatBloc(this.petRepository, this.socketService) : super(ChatInitial()) {
+  ChatBloc(this.socketService) : super(ChatInitial()) {
     on<ConnectToSocketEvent>((event, emit) {
       // String? token =
       //     StorageServices.getString(AppConstants.STORAGE_ACCESS_TOKEN);

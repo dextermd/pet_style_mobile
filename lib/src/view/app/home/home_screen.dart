@@ -3,11 +3,16 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
+import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
+import 'package:pet_style_mobile/core/services/firebase_messaging_services.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/appointment_card.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/pet_card.dart';
+import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 import 'package:pet_style_mobile/src/view/widget/base_container.dart';
 import 'package:pet_style_mobile/src/view/widget/t_rounded_container.dart';
 
@@ -19,11 +24,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late FirebaseMessagingServices _firebaseMessagingServices;
+
   @override
   void initState() {
-    super.initState();
-
+    _firebaseMessagingServices = GetIt.I<FirebaseMessagingServices>();
     context.read<UserBloc>().add(const FetchUserData());
+    _firebaseMessagingServices.requestPermission();
+    super.initState();
   }
 
   @override
@@ -86,16 +94,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 actions: [
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
-                    child: CircleAvatar(
-                        radius: 20,
-                        backgroundImage: state.user.image != null
-                            ? NetworkImage(state.user.image ?? '')
-                            : const AssetImage(
-                                    'assets/images/default_profile.png')
-                                as ImageProvider),
+                    child:
+                        state.user.image != null && state.user.image!.isNotEmpty
+                            ? CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(state.user.image
+                                            ?.contains('http') ==
+                                        true
+                                    ? state.user.image ?? ''
+                                    : '${AppSecrets.baseUrl}/${state.user.image}'),
+                              )
+                            : CircleAvatar(
+                                backgroundColor: AppColors.primaryElement,
+                                radius: 20,
+                                child: Icon(
+                                  Icons.person,
+                                  color: AppColors.whiteText,
+                                  size: 24,
+                                ),
+                              ),
                   ),
                 ],
-                // text
                 title: Text(
                   'Привет, ${state.user.name}',
                   style: TextStyle(
@@ -114,7 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   context
                       .read<UserBloc>()
                       .add(FetchUserData(completer: completer));
-                  return completer.future;
                 },
               ),
               const SliverPadding(
@@ -334,8 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               OutlinedButton(
                 onPressed: () {
-                  BlocProvider.of<UserBloc>(context)
-                      .add(const FetchUserData(completer: null));
+                  context.go(AppRoutes.home);
                 },
                 child: const Text(
                   'Повторить попытку',

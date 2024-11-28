@@ -125,12 +125,11 @@ class PetRepositoryImpl implements PetRepository {
 
       final FormData formData = FormData.fromMap(formDataMap);
 
-      logDebug('formData: ${formData.fields}');
       final Response response = await dio.patch(
         '${AppSecrets.petsUrl}/$petId',
         data: formData,
       );
-      logDebug('updatePet response: ${response.data}');
+      
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else {

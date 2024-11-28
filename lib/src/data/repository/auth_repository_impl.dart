@@ -70,13 +70,14 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> logOutDB() async {
     try {
-      await _storageServices.remove(AppConstants.STORAGE_ACCESS_TOKEN);
-      await _storageServices.remove(AppConstants.STORAGE_REFRESH_TOKEN);
-      await _storageServices.remove(AppConstants.STORAGE_USER_ID);
-      await _storageServices.remove(AppConstants.STORAGE_SHOW_ONBOARDING);
+      await dio.post(
+        AppSecrets.logoutUrl,
+      );
     } catch (e) {
       logDebug(e.toString());
       rethrow;
+    } finally {
+      await logOutUI();
     }
   }
 

@@ -14,7 +14,6 @@ class FetchUserData extends UserEvent {
   List<Object?> get props => [completer];
 }
 
-
 class GetSenderUserEvent extends UserEvent {
   final String? senderId;
 
@@ -24,10 +23,28 @@ class GetSenderUserEvent extends UserEvent {
   List<Object?> get props => [senderId];
 }
 
-// getActiveAppointmentsByUser
 class GetActiveAppointmentsByUserEvent extends UserEvent {
   const GetActiveAppointmentsByUserEvent();
 
   @override
   List<Object?> get props => [];
+}
+
+class UpdateUserDataEvent extends UserEvent {
+  final User? user;
+  final String? newPassword;
+
+  const UpdateUserDataEvent({this.user, this.newPassword});
+
+  @override
+  List<Object?> get props => [user];
+}
+
+class UpdateImageEvent extends UserEvent {
+  final File image;
+
+  const UpdateImageEvent(this.image);
+
+  @override
+  List<Object?> get props => [image];
 }

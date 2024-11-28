@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pet_style_mobile/blocs/pet_form/pet_form_bloc.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
+import 'package:pet_style_mobile/core/services/media_services.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/data/model/pet/pet.dart';
 import 'package:pet_style_mobile/src/view/app/menu/app_bar_back.dart';
@@ -66,6 +67,8 @@ class _PetFormScreenState extends State<PetFormScreen> {
   bool petRequired = false;
   bool isDogBreeds = false;
 
+  late MediaServices _mediaServices;
+
   File? image;
 
   var suggestions = <SearchFieldListItem<String>>[];
@@ -73,6 +76,7 @@ class _PetFormScreenState extends State<PetFormScreen> {
   @override
   void initState() {
     super.initState();
+    _mediaServices = GetIt.I<MediaServices>();
     context.read<PetFormBloc>().add(LoadBreeds());
     if (widget.id != null) {
       editInitial();
@@ -98,16 +102,6 @@ class _PetFormScreenState extends State<PetFormScreen> {
 
   void editInitial() {
     context.read<PetFormBloc>().add(LoadPet(widget.id!));
-  }
-
-  void selectImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      image = File(pickedFile.path);
-      setState(() {});
-    }
   }
 
   @override
@@ -220,7 +214,17 @@ class _PetFormScreenState extends State<PetFormScreen> {
                             children: [
                               const Center(child: ReusableText(text: 'Фото')),
                               InkWell(
-                                onTap: () => selectImage(),
+                                onTap: () async {
+                                  _mediaServices
+                                      .getImageFromGallery()
+                                      .then((value) {
+                                    if (value != null) {
+                                      setState(() {
+                                        image = value;
+                                      });
+                                    }
+                                  });
+                                },
                                 child: _serverImage == null && image == null
                                     ? Center(
                                         child: SizedBox(

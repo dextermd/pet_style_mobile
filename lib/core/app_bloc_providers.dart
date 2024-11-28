@@ -39,7 +39,7 @@ class AppBlocProviders {
           create: (context) => UserBloc(
             GetIt.I<UserRepository>(),
             GetIt.I<AppointmentRepository>(),
-          ),
+          )..add(FetchUserData()),
         ),
         BlocProvider<PetFormBloc>(
           lazy: true,
@@ -71,7 +71,7 @@ class AppBlocProviders {
           lazy: true,
           create: (context) => ScheduleBloc(
             GetIt.I<AppointmentRepository>(),
-          ),
+          )..add(ScheduleLoad()),
         ),
       ];
 }

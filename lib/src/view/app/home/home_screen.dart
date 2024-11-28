@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _firebaseMessagingServices = GetIt.I<FirebaseMessagingServices>();
-    context.read<UserBloc>().add(const FetchUserData());
+    //context.read<UserBloc>().add(const FetchUserData());
     _firebaseMessagingServices.requestPermission();
     super.initState();
   }
@@ -42,6 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
+      buildWhen: (previous, current) {
+        if (current is UpdateUserDataError ||
+            current is UpdateImageError ||
+            current is UserUpdated ||
+            current is ImageUpdated) {
+          return false;
+        }
+        return true;
+      },
       builder: (context, state) {
         if (state is UserLoading) {
           return const Center(
@@ -352,7 +361,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               OutlinedButton(
                 onPressed: () {
-                  context.go(AppRoutes.home);
+                  context.goNamed(AppRoutes.home);
+                  context.read<UserBloc>().add(FetchUserData());
                 },
                 child: const Text(
                   'Повторить попытку',

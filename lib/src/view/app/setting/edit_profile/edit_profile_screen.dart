@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
-import 'package:pet_style_mobile/core/services/media_services.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/core/values/strings.dart';
 import 'package:pet_style_mobile/src/view/app/menu/app_bar_back.dart';
@@ -81,6 +79,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           FocusScope.of(context).unfocus();
         },
         child: BlocBuilder<UserBloc, UserState>(
+          buildWhen: (previous, current) {
+            if (current is UserUpdated || current is UpdateUserDataError) {
+              return false;
+            }
+            return true;
+          },
           builder: (context, state) {
             if (state is UserLoading) {
               return const Center(

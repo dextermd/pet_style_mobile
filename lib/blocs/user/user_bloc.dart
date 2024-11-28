@@ -66,7 +66,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UpdateImageEvent>((event, emit) async {
       try {
         await _userRepository.updateImage(event.image);
-        emit(UserUpdated());
+        emit(ImageUpdated());
       } catch (e) {
         emit(UpdateImageError(e.toString()));
       }

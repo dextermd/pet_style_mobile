@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pet_style_mobile/blocs/sign_in/sign_in_bloc.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
@@ -32,7 +31,7 @@ class _SettingScreenState extends State<SettingScreen> {
   void initState() {
     super.initState();
     _mediaServices = GetIt.I<MediaServices>();
-    context.read<UserBloc>().add(const FetchUserData());
+    //context.read<UserBloc>().add(const FetchUserData());
   }
 
   @override
@@ -49,19 +48,32 @@ class _SettingScreenState extends State<SettingScreen> {
           listener: (context, state) {
             if (state is UpdateUserDataError) {
               AppUtils.showToastError(context, '', state.message);
-              context.read<UserBloc>().add(const FetchUserData());
             }
             if (state is UserUpdated) {
               context.pop();
-              context.read<UserBloc>().add(const FetchUserData());
+              context.read<UserBloc>().add(FetchUserData());
               AppUtils.showToastSuccess(context, 'Успешно', 'Профиль обновлен');
             }
+            if (state is ImageUpdated) {
+              context.read<UserBloc>().add(FetchUserData());
+
+              AppUtils.showToastSuccess(
+                  context, 'Успешно', 'Изображение обновлено');
+            }
             if (state is UpdateImageError) {
-              context.read<UserBloc>().add(const FetchUserData());
               AppUtils.showToastError(context, '', state.message);
             }
           },
           child: BlocBuilder<UserBloc, UserState>(
+            buildWhen: (previous, current) {
+              if (current is UpdateUserDataError ||
+                  current is UpdateImageError ||
+                  current is UserUpdated ||
+                  current is ImageUpdated) {
+                return false;
+              }
+              return true;
+            },
             builder: (context, state) {
               if (state is UserLoading) {
                 return const Center(

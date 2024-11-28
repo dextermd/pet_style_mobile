@@ -7,7 +7,6 @@ import 'package:pet_style_mobile/blocs/schedule/schedule_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/utils/app_utils.dart';
-import 'package:pet_style_mobile/src/view/app/home/widgets/appointment_card.dart';
 import 'package:pet_style_mobile/src/view/app/menu/app_bar_tabs.dart';
 import 'package:pet_style_mobile/src/view/app/schedule/widgets/schedule_card.dart';
 import 'package:pet_style_mobile/src/view/app/schedule/widgets/schedule_card_filtered.dart';
@@ -26,7 +25,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   void initState() {
-    context.read<ScheduleBloc>().add(ScheduleLoad());
+    //context.read<ScheduleBloc>().add(ScheduleLoad());
     super.initState();
   }
 

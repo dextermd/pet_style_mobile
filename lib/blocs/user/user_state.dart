@@ -18,7 +18,7 @@ final class UserLoaded extends UserState {
   const UserLoaded(this.user, this.pets, this.activeAppointments);
 
   @override
-  List<Object> get props => [user, pets];
+  List<Object> get props => [user, pets, ];
 }
 
 final class UserError extends UserState {
@@ -43,8 +43,9 @@ final class UpdateUserDataError extends UserState {
 
 final class UserUpdated extends UserState {}
 
-
 final class UpdateImageError extends UserState {
   final String message;
   const UpdateImageError(this.message);
 }
+
+final class ImageUpdated extends UserState {}

@@ -33,8 +33,9 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
         if (googleUser != null) {
           logDebug('$googleUser');
-          
-          final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+          final GoogleSignInAuthentication googleAuth =
+              await googleUser.authentication;
 
           logDebug('Google Auth ID Token: ${googleAuth.accessToken}');
           logDebug('Google Auth ID Token: ${googleAuth.idToken}');
@@ -51,13 +52,16 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
             emit(SignInSuccess());
           } else {
             emit(const SignInFailure(message: 'Authentication failed'));
+            await _googleSignIn.signOut();
           }
         } else {
           emit(const SignInFailure(message: 'Google sign-in canceled'));
+          await _googleSignIn.signOut();
         }
       } catch (error, stackTrace) {
         logHandle('GoogleSignInError: $error', stackTrace);
         emit(const SignInFailure(message: 'Google sign-in failed'));
+        await _googleSignIn.signOut();
       }
     });
     on<SignOutRequired>((event, emit) async {

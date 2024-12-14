@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_style_mobile/blocs/appointment/appointment_bloc.dart';
 import 'package:pet_style_mobile/blocs/chat/chat_bloc.dart';
+import 'package:pet_style_mobile/blocs/localization/localization_bloc.dart';
 import 'package:pet_style_mobile/blocs/onboarding_bloc/onboarding_bloc.dart';
 import 'package:pet_style_mobile/blocs/otp/otp_bloc.dart';
 import 'package:pet_style_mobile/blocs/pet_form/pet_form_bloc.dart';
@@ -18,6 +19,10 @@ import 'package:pet_style_mobile/src/domain/repository/user_repository.dart';
 
 class AppBlocProviders {
   static get allBlocProviders => [
+        BlocProvider(
+          lazy: true,
+          create: (context) => LocalizationBloc()..add(GetLanguage()),
+        ),
         BlocProvider<OnboardingBloc>(
           lazy: true,
           create: (context) => OnboardingBloc(),

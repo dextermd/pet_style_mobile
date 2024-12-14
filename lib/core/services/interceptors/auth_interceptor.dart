@@ -46,7 +46,6 @@ class AuthInterceptor implements InterceptorsWrapper {
               headers: {
                 ...err.requestOptions.headers,
                 'Authorization': '${newTokens.accessToken}',
-                'Content-Type': 'multipart/form-data',
               },
             );
 

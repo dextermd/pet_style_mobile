@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_style_mobile/blocs/localization/localization_bloc.dart';
 import 'package:pet_style_mobile/core/app_bloc_providers.dart';
 import 'package:pet_style_mobile/core/dependency_injector.dart';
 import 'package:pet_style_mobile/core/services/storage_services.dart';
 import 'package:pet_style_mobile/core/theme/app_theme.dart';
+import 'package:pet_style_mobile/l10n/l10n.dart';
 import 'package:pet_style_mobile/src/view/router/app_router.dart';
 import 'package:pet_style_mobile/utils.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
@@ -45,14 +47,21 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            title: 'Pet-Style Mobile App',
-            theme: AppTheme.whiteThemeMode,
-            //routerConfig: router,
-            routerDelegate: router.routerDelegate,
-            routeInformationParser: router.routeInformationParser,
-            routeInformationProvider: router.routeInformationProvider,
+          return BlocBuilder<LocalizationBloc, LocalizationState>(
+            builder: (context, state) {
+              return MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                title: 'Pet-Style Mobile App',
+                locale: state.selectedLanguage.value,
+                supportedLocales: AppLocalizations.supportedLocales,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                theme: AppTheme.whiteThemeMode,
+                //routerConfig: router,
+                routerDelegate: router.routerDelegate,
+                routeInformationParser: router.routeInformationParser,
+                routeInformationProvider: router.routeInformationProvider,
+              );
+            },
           );
         },
       ),

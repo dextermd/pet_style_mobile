@@ -20,16 +20,15 @@ class _BottomNavigationState extends State<BottomNavigation> {
   void changeTab(int index) {
     switch (index) {
       case 0:
-        context.goNamed('home');
+        context.pushNamed(AppRoutes.home);
         break;
       case 1:
-        context.goNamed('chat');
         break;
       case 2:
-        context.goNamed('schedule');
+        context.pushNamed(AppRoutes.schedule);
         break;
       case 3:
-        context.pushNamed('setting');
+        context.pushNamed(AppRoutes.setting);
         break;
     }
 

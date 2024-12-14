@@ -14,6 +14,7 @@ import 'package:pet_style_mobile/src/view/app/home/widgets/appointment_card.dart
 import 'package:pet_style_mobile/src/view/app/home/widgets/pet_card.dart';
 import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 import 'package:pet_style_mobile/src/view/widget/base_container.dart';
+import 'package:pet_style_mobile/src/view/widget/error_loading_text.dart';
 import 'package:pet_style_mobile/src/view/widget/t_rounded_container.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _firebaseMessagingServices = GetIt.I<FirebaseMessagingServices>();
-    //context.read<UserBloc>().add(const FetchUserData());
+    context.read<UserBloc>().add(const FetchUserData());
     _firebaseMessagingServices.requestPermission();
     super.initState();
   }
@@ -341,35 +342,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           );
         }
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Что-то пошло не так',
-                style: const TextStyle(color: AppColors.primaryText)
-                    .copyWith(fontSize: 16),
-              ),
-              Text(
-                'Попробуйте чуть позже',
-                style: const TextStyle(color: AppColors.primaryText)
-                    .copyWith(fontSize: 10),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              OutlinedButton(
-                onPressed: () {
-                  context.goNamed(AppRoutes.home);
-                  context.read<UserBloc>().add(FetchUserData());
-                },
-                child: const Text(
-                  'Повторить попытку',
-                ),
-              ),
-            ],
-          ),
+        return ErrorLoadingText(
+          onRetry: () {
+            final completer = Completer();
+            context.goNamed(AppRoutes.home);
+            context.read<UserBloc>().add(FetchUserData(completer: completer));
+          },
         );
       },
     );

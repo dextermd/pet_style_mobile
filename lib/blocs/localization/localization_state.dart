@@ -1,10 +1,16 @@
 part of 'localization_bloc.dart';
 
-sealed class LocalizationState extends Equatable {
-  const LocalizationState();
-  
-  @override
-  List<Object> get props => [];
-}
+class LocalizationState extends Equatable {
+  final Language selectedLanguage;
 
-final class LocalizationInitial extends LocalizationState {}
+  const LocalizationState({Language? selectedLanguage})
+      : selectedLanguage = selectedLanguage ?? Language.romanian;
+
+  @override
+  List<Object?> get props => [selectedLanguage];
+
+  LocalizationState copyWith({Language? selectedLanguage}) {
+    return LocalizationState(
+        selectedLanguage: selectedLanguage ?? selectedLanguage);
+  }
+}

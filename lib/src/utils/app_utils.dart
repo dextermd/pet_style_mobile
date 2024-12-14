@@ -1,9 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:pet_style_mobile/blocs/localization/localization_bloc.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
+import 'package:pet_style_mobile/l10n/l10n.dart';
+import 'package:pet_style_mobile/src/data/model/language/language.dart';
+import 'package:pet_style_mobile/src/view/widget/my_list_tile.dart';
 import 'package:toastification/toastification.dart';
 
 final class AppUtils {
   AppUtils._();
+
+  static void showLanguageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          content: SizedBox(
+            height: 200.h,
+            width: 300.w,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  colors: [
+                    AppColors.primaryBackground,
+                    AppColors.primarySecondBackground
+                  ],
+                  radius: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.change_language,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: AppColors.primaryText,
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 20),
+                    child: BlocBuilder<LocalizationBloc, LocalizationState>(
+                      buildWhen: (previous, current) =>
+                          previous.selectedLanguage != current.selectedLanguage,
+                      builder: (context, state) {
+                        return SizedBox(
+                          height: 120.h,
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            itemBuilder: (ctx, i) {
+                              final bool isLanguageChosen =
+                                  Language.values[i] == state.selectedLanguage;
+                              return MyListTile(
+                                addBorderBottom: false,
+                                onTap: () {
+                                  context.read<LocalizationBloc>().add(
+                                        ChangeLanguage(Language.values[i]),
+                                      );
+                                  Navigator.of(context).pop();
+                                },
+                                title: Language.values[i].text,
+                                leading: SvgPicture.asset(
+                                  Language.values[i].iconPath,
+                                  width: 14,
+                                  height: 14,
+                                ),
+                                trailing: isLanguageChosen
+                                    ? Icon(Icons.check,
+                                        color: AppColors.primaryText)
+                                    : const Icon(
+                                        Icons.chevron_right,
+                                        color: AppColors.primaryText,
+                                      ),
+                              );
+                            },
+                            separatorBuilder: (ctx, i) => const Divider(
+                              height: 5,
+                            ),
+                            itemCount: Language.values.length,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   static void showToastSuccess(
     BuildContext context,

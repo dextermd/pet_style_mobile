@@ -1,9 +1,6 @@
 class AppSecrets {
-  //static const baseUrl = 'http://192.168.18.127:3000'; // RD Home
-  static const String baseUrl = 'http://192.168.95.109:3000'; // RD Office
-
-  //static const String wsBaseUrl = 'http://192.168.18.127:3002'; // RD Home
-  static const String wsBaseUrl = 'http://192.168.95.109:3002'; // RD Offi§ce
+  static const baseUrl = 'http://192.168.18.127:3000'; // RD Home
+  //static const String baseUrl = 'http://192.168.94.20:3000'; // RD Office
 
   // Auth
   static const String loginUrl = "$baseUrl/api/auth/login";

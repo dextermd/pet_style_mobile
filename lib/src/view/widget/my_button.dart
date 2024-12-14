@@ -10,6 +10,8 @@ class MyButton extends StatelessWidget {
   final Color borderColor;
   final double width;
   final double? fontSize;
+  final double? height;
+  final TextStyle? textStyle;
 
   const MyButton({
     super.key,
@@ -20,13 +22,15 @@ class MyButton extends StatelessWidget {
     this.borderColor = AppColors.primaryTransparent,
     required this.width,
     this.fontSize = 16,
+    this.height,
+    this.textStyle,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      height: 40.h,
+      height: height ?? 40.h,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
@@ -34,7 +38,7 @@ class MyButton extends StatelessWidget {
           foregroundColor: WidgetStateProperty.all(color),
           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5.r),
+              borderRadius: BorderRadius.circular(3.r),
               side: BorderSide(
                 color: borderColor,
                 width: 1.w,
@@ -47,11 +51,12 @@ class MyButton extends StatelessWidget {
           child: Text(
             text,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: textColor,
-              fontSize: fontSize,
-              fontWeight: FontWeight.w600,
-            ),
+            style: textStyle ??
+                TextStyle(
+                  color: textColor,
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ),
       ),

@@ -14,7 +14,7 @@ dependencies:
 
   internet_connection_checker_plus: ^2.5.2
 
-  searchfield: ^1.1.9
+  searchfield: ^1.2.1
 
   # bloc
   flutter_bloc: ^8.1.6

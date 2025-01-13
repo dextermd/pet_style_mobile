@@ -1,5 +1,6 @@
 class AppSecrets {
-  static const baseUrl = 'http://192.168.18.127:3000'; // RD Home
+  static const baseUrl = 'https://petstyle.dextermd.dev'; // Production
+  //static const baseUrl = 'http://192.168.18.127:3000'; // RD Home
   //static const String baseUrl = 'http://192.168.94.20:3000'; // RD Office
 
   // Auth
@@ -46,4 +47,13 @@ class AppSecrets {
   // Firebase Messaging
   static const String sendNotificationUrl =
       "https://fcm.googleapis.com/fcm/send";
+
+  // Services
+  static const String servicesUrl = "$baseUrl/api/services";
+
+  // Faq
+  static const String faqUrl = "$baseUrl/api/faqs";
+
+  // Promotions
+  static const String promotionsUrl = "$baseUrl/api/promotion";
 }

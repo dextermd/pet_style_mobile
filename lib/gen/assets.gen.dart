@@ -93,6 +93,28 @@ class $AssetsFontsGen {
       ];
 }
 
+class $AssetsIconsGen {
+  const $AssetsIconsGen();
+
+  /// File path: assets/icons/RO.svg
+  SvgGenImage get ro => const SvgGenImage('assets/icons/RO.svg');
+
+  /// File path: assets/icons/RU.svg
+  SvgGenImage get ru => const SvgGenImage('assets/icons/RU.svg');
+
+  /// File path: assets/icons/teleg.svg
+  SvgGenImage get teleg => const SvgGenImage('assets/icons/teleg.svg');
+
+  /// File path: assets/icons/viber.svg
+  SvgGenImage get viber => const SvgGenImage('assets/icons/viber.svg');
+
+  /// File path: assets/icons/whats.svg
+  SvgGenImage get whats => const SvgGenImage('assets/icons/whats.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [ro, ru, teleg, viber, whats];
+}
+
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
@@ -226,6 +248,7 @@ class Assets {
   Assets._();
 
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
+  static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsJsonGen json = $AssetsJsonGen();
   static const $AssetsLottieGen lottie = $AssetsLottieGen();

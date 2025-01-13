@@ -23,7 +23,7 @@ class BaseContainer extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        color: AppColors.containerColor.withOpacity(0.2),
+        color: AppColors.containerColor.withAlpha(50),
       ),
       //padding: const EdgeInsets.only(left: 10),
       child: child,

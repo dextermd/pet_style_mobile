@@ -8,14 +8,20 @@ import 'package:pet_style_mobile/core/services/socket_service.dart';
 import 'package:pet_style_mobile/src/data/repository/appointment_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/auth_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/device_repository_impl.dart';
+import 'package:pet_style_mobile/src/data/repository/faq_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/otp_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/pet_repository_impl.dart';
+import 'package:pet_style_mobile/src/data/repository/promotion_repository_impl.dart';
+import 'package:pet_style_mobile/src/data/repository/service_repository_impl.dart';
 import 'package:pet_style_mobile/src/data/repository/user_repository_impl.dart';
 import 'package:pet_style_mobile/src/domain/repository/appointment_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/auth_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/device_repository.dart';
+import 'package:pet_style_mobile/src/domain/repository/faq_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/otp_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/pet_repository.dart';
+import 'package:pet_style_mobile/src/domain/repository/promotion_repository.dart';
+import 'package:pet_style_mobile/src/domain/repository/service_repository.dart';
 import 'package:pet_style_mobile/src/domain/repository/user_repository.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -61,6 +67,18 @@ class DependencyInjector {
 
     _getIt.registerLazySingleton<DeviceRepository>(
       () => DeviceRepositoryImpl(dio: dio),
+    );
+
+    _getIt.registerLazySingleton<FaqRepository>(
+      () => FaqRepositoryImpl(dio: dio),
+    );
+
+    _getIt.registerLazySingleton<PromotionRepository>(
+      () => PromotionRepositoryImpl(dio: dio),
+    );
+
+    _getIt.registerLazySingleton<ServiceRepository>(
+      () => ServiceRepositoryImpl(dio: dio),
     );
 
     _getIt.registerLazySingleton<InternetConnection>(

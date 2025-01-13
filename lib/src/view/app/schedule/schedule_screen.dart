@@ -25,7 +25,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   void initState() {
-    //context.read<ScheduleBloc>().add(ScheduleLoad());
+    context.read<ScheduleBloc>().add(ScheduleLoad());
     super.initState();
   }
 
@@ -43,7 +43,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           title: 'Мои записи',
           bottomTabs: TabBar(
             unselectedLabelColor: AppColors.primaryHintText,
-            labelColor: AppColors.primaryText.withOpacity(0.6),
+            labelColor: AppColors.primaryText.withAlpha(160),
             indicatorSize: TabBarIndicatorSize.tab,
             labelStyle: Theme.of(context).textTheme.bodyLarge,
             labelPadding: const EdgeInsets.symmetric(horizontal: 10),
@@ -67,9 +67,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 'Запись отменена',
               );
               Future.delayed(const Duration(seconds: 3), () {
-                setState(() {
-                  cancelingIds.clear();
-                });
+                if (mounted) {
+                  setState(() {
+                    cancelingIds.clear();
+                  });
+                }
               });
             }
             if (state is ScheduleCancelError) {
@@ -79,18 +81,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 state.message,
               );
               Future.delayed(const Duration(seconds: 5), () {
-                setState(() {
-                  cancelingIds.remove(state.canceledId);
-                });
+                if (mounted) {
+                  setState(() {
+                    cancelingIds.remove(state.canceledId);
+                  });
+                }
               });
             }
             if (state is EditingNotAvailable) {
               AppUtils.showToastError(context, 'Ошибка',
                   'Редактирование записи возможно не позднее чем за 48 часов до начала приема. Для редактирования записи свяжитесь с грумером');
               Future.delayed(const Duration(seconds: 5), () {
-                setState(() {
-                  editingIds.clear();
-                });
+                if (mounted) {
+                  setState(() {
+                    editingIds.clear();
+                  });
+                }
               });
             }
             if (state is EditingAvailable) {
@@ -134,6 +140,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 state.active[index].appointmentDate!),
                             petName: state.active[index].pet?.name ?? '',
                             breed: state.active[index].pet?.breed ?? '',
+                            petPhoto: state.active[index].pet?.photo ?? '',
                             onCanceled: cancelingIds
                                     .contains(state.active[index].id!)
                                 ? null

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/widget/my_elevation_button.dart';
 
@@ -7,6 +8,7 @@ class ScheduleCard extends StatelessWidget {
   final String date;
   final String petName;
   final String breed;
+  final String petPhoto;
   final void Function()? onCanceled;
   final void Function()? onEdit;
 
@@ -16,6 +18,7 @@ class ScheduleCard extends StatelessWidget {
     required this.date,
     required this.petName,
     required this.breed,
+    required this.petPhoto,
     this.onCanceled,
     this.onEdit,
   });
@@ -25,11 +28,11 @@ class ScheduleCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Card(
-        color: AppColors.containerColor.withOpacity(0.2),
+        color: AppColors.containerColor.withAlpha(50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        shadowColor: AppColors.containerColor.withOpacity(0.2),
+        shadowColor: AppColors.containerColor.withAlpha(50),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -42,14 +45,14 @@ class ScheduleCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.access_time,
-                        color: AppColors.primaryText.withOpacity(0.6),
+                        color: AppColors.primaryText.withAlpha(160),
                         size: 18,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         time,
                         style: TextStyle(
-                          color: AppColors.primaryText.withOpacity(0.6),
+                          color: AppColors.primaryText.withAlpha(160),
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -60,14 +63,14 @@ class ScheduleCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.calendar_month,
-                        color: AppColors.primaryText.withOpacity(0.6),
+                        color: AppColors.primaryText.withAlpha(160),
                         size: 18,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         date,
                         style: TextStyle(
-                          color: AppColors.primaryText.withOpacity(0.6),
+                          color: AppColors.primaryText.withAlpha(160),
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -80,9 +83,9 @@ class ScheduleCard extends StatelessWidget {
               Row(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(50), // Circular image
+                    borderRadius: BorderRadius.circular(50),
                     child: Image.network(
-                      'https://images.pexels.com/photos/160846/french-bulldog-summer-smile-joy-160846.jpeg?auto=compress&cs=tinysrgb&w=600', // Replace with your image URL
+                      '${AppSecrets.baseUrl}/uploads/pets/$petPhoto',
                       width: 90,
                       height: 90,
                       fit: BoxFit.cover,
@@ -96,7 +99,7 @@ class ScheduleCard extends StatelessWidget {
                         Text(
                           'Имя: $petName',
                           style: TextStyle(
-                            color: AppColors.primaryText.withOpacity(0.6),
+                            color: AppColors.primaryText.withAlpha(160),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -105,7 +108,7 @@ class ScheduleCard extends StatelessWidget {
                         Text(
                           'Порода: $breed',
                           style: TextStyle(
-                            color: AppColors.primaryText.withOpacity(0.7),
+                            color: AppColors.primaryText.withAlpha(210),
                             fontSize: 14,
                           ),
                         ),
@@ -113,7 +116,7 @@ class ScheduleCard extends StatelessWidget {
                         Text(
                           'Мастер: Катя',
                           style: TextStyle(
-                            color: AppColors.primaryText.withOpacity(0.7),
+                            color: AppColors.primaryText.withAlpha(201),
                             fontSize: 14,
                           ),
                         ),
@@ -130,7 +133,7 @@ class ScheduleCard extends StatelessWidget {
                     text: 'Отменить',
                     onPressed: onCanceled,
                     backgroundColor:
-                        AppColors.primaryStatusError.withOpacity(0.6),
+                        AppColors.primaryStatusError.withAlpha(160),
                   ),
                   MyElevatedButton(
                     text: 'Редактировать',

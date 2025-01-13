@@ -252,7 +252,7 @@ class _PetFormScreenState extends State<PetFormScreen> {
                                                 BorderRadius.circular(75),
                                             child: image == null
                                                 ? Image.network(
-                                                    '${AppSecrets.baseUrl}/$_serverImage',
+                                                    '${AppSecrets.baseUrl}/uploads/pets/$_serverImage',
                                                     fit: BoxFit.cover,
                                                   )
                                                 : CircleAvatar(

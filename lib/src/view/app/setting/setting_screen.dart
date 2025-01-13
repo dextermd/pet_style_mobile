@@ -131,7 +131,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                                     ?.contains('http') ==
                                                 true
                                             ? state.user.image ?? ''
-                                            : '${AppSecrets.baseUrl}/${state.user.image}'),
+                                            : '${AppSecrets.baseUrl}/uploads/users/${state.user.image}'),
                                         radius: 75,
                                       )
                                 : CircleAvatar(
@@ -171,7 +171,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 .textTheme
                                 .titleMedium!
                                 .copyWith(
-                                  color: AppColors.primaryText.withOpacity(0.8),
+                                  color: AppColors.primaryText.withAlpha(200),
                                 ),
                           ),
                           Text(
@@ -180,7 +180,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 .textTheme
                                 .titleSmall!
                                 .copyWith(
-                                  color: AppColors.primaryText.withOpacity(0.8),
+                                  color: AppColors.primaryText.withAlpha(200),
                                 ),
                           ),
                           SizedBox(height: 20.h),
@@ -236,7 +236,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         return LangButton(
                           text: language.text,
                           textColor: isLanguageChosen
-                              ? AppColors.mediumGray
+                              ? AppColors.primaryText.withAlpha(120)
                               : AppColors.primaryText,
                           onTap: () {
                             context.read<LocalizationBloc>().add(

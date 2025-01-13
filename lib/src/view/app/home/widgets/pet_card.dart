@@ -39,7 +39,7 @@ class PetCard extends StatelessWidget {
                 child: TRoundedImage(
                   width: 80,
                   height: 80,
-                  imageUrl: '${AppSecrets.baseUrl}/$photo',
+                  imageUrl: '${AppSecrets.baseUrl}/uploads/pets/$photo',
                   applyImageRadius: true,
                   isNetworkImage: isNetworkImage,
                 ),

@@ -25,7 +25,7 @@ class AppointmentCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: AppColors.containerColor.withOpacity(0.2),
+          color: AppColors.containerColor.withAlpha(50),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         child: Column(
@@ -53,7 +53,7 @@ class AppointmentCard extends StatelessWidget {
                       Text(
                         subtitle,
                         style: TextStyle(
-                          color: AppColors.primaryText.withOpacity(0.5),
+                          color: AppColors.primaryText.withAlpha(200),
                           fontSize: 12,
                         ),
                       ),

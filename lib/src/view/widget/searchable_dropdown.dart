@@ -38,7 +38,7 @@ class SearchableDropdown extends StatelessWidget {
       ),
       suggestions: suggestions,
       scrollbarDecoration: ScrollbarDecoration(
-        thumbColor: AppColors.primaryElement.withOpacity(0.5),
+        thumbColor: AppColors.primaryElement.withAlpha(120),
         radius: const Radius.circular(10),
       ),
       searchInputDecoration: SearchInputDecoration(
@@ -46,20 +46,21 @@ class SearchableDropdown extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         contentPadding: const EdgeInsets.all(16),
-        fillColor: AppColors.containerColor.withOpacity(0.2),
+        fillColor: AppColors.containerColor.withAlpha(50),
         filled: true,
         hintStyle: TextStyle(
-          color: AppColors.primaryText.withOpacity(0.5),
+          color: AppColors.primaryText.withAlpha(120),
           fontSize: 13,
         ),
       ),
       suggestionsDecoration: SuggestionDecoration(
-        color: AppColors.containerColor.withOpacity(0.2),
+        color: AppColors.containerColor.withAlpha(50),
         borderRadius: BorderRadius.circular(10),
       ),
       validator: validator,
       suggestionState: Suggestion.expand,
       onSuggestionTap: (SearchFieldListItem<String> x) {
+        controller.text = x.searchKey;
         focusNode.unfocus();
       },
       onSearchTextChanged: (query) {

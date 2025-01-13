@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_style_mobile/blocs/service/service_bloc.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
 import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
 import 'package:pet_style_mobile/core/services/firebase_messaging_services.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/appointment_card.dart';
+import 'package:pet_style_mobile/src/view/app/home/widgets/home_title.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/pet_card.dart';
 import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 import 'package:pet_style_mobile/src/view/widget/base_container.dart';
@@ -26,12 +28,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late FirebaseMessagingServices _firebaseMessagingServices;
+  bool _showFullServiceList = false;
 
   @override
   void initState() {
     _firebaseMessagingServices = GetIt.I<FirebaseMessagingServices>();
     context.read<UserBloc>().add(const FetchUserData());
     _firebaseMessagingServices.requestPermission();
+    context.read<ServiceBloc>().add(ServiceFetchEvent());
+
     super.initState();
   }
 
@@ -42,6 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+
     return BlocBuilder<UserBloc, UserState>(
       buildWhen: (previous, current) {
         if (current is UpdateUserDataError ||
@@ -112,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ?.contains('http') ==
                                         true
                                     ? state.user.image ?? ''
-                                    : '${AppSecrets.baseUrl}/${state.user.image}'),
+                                    : '${AppSecrets.baseUrl}/uploads/users/${state.user.image}'),
                               )
                             : CircleAvatar(
                                 backgroundColor: AppColors.primaryElement,
@@ -130,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.primaryText.withOpacity(0.6),
+                    color: AppColors.primaryText.withAlpha(160),
                     letterSpacing: 1.2,
                   ),
                   textAlign: TextAlign.center,
@@ -166,27 +173,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.pets,
-                        color: AppColors.primaryElement,
-                        size: 24,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Мои питомцы',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryElement,
-                                ),
-                      ),
-                    ],
+                child: HomeTitle(
+                  title: 'Мои питомцы',
+                  icon: Icon(
+                    Icons.pets,
+                    color: AppColors.primaryElement,
+                    size: 24,
                   ),
                 ),
               ),
@@ -219,33 +211,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              if (state.activeAppointments.isNotEmpty)
+              if (state.activeAppointments.isNotEmpty) ...[
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.schedule,
-                          color: AppColors.primaryElement,
-                          size: 24,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Предстоящие записи',
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primaryElement,
-                                  ),
-                        ),
-                      ],
+                  child: HomeTitle(
+                    title: 'Предстоящие записи',
+                    icon: Icon(
+                      Icons.schedule,
+                      color: AppColors.primaryElement,
+                      size: 24,
                     ),
                   ),
                 ),
-              if (state.activeAppointments.isNotEmpty)
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: 120,
@@ -263,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               TRoundedContainer(
                                 backgroundColor:
-                                    AppColors.containerColor.withOpacity(0.3),
+                                    AppColors.containerColor.withAlpha(75),
                                 width: 100,
                                 height: 100,
                                 radius: 10,
@@ -334,6 +310,147 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
+              ],
+              BlocBuilder<ServiceBloc, ServiceState>(
+                builder: (context, state) {
+                  if (state is ServiceLoaded && state.services.isNotEmpty) {
+                    final visibleCount =
+                        _showFullServiceList ? state.services.length : 5;
+                    return SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          HomeTitle(
+                            title: 'Цены на услуги',
+                            icon: Icon(
+                              Icons.attach_money,
+                              color: AppColors.primaryElement,
+                              size: 24,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.containerColor.withAlpha(50),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Популярные породы собак и цена стрижки за полный комплекс, в леях.',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          AppColors.primaryText.withAlpha(200),
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          'Цена услуг варьируется ввиду:',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.primaryText
+                                                .withAlpha(200),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  _buildListItem('- Плохого поведения собаки'),
+                                  _buildListItem(
+                                      '- Запущенного состояния питомца'),
+                                  _buildListItem('- Более сложной стрижки'),
+                                  SizedBox(height: 12),
+                                  Text(
+                                    'Эти аспекты напрямую влияют на сложность и длительность стрижки.',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontStyle: FontStyle.italic,
+                                      color: AppColors.primaryText,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: visibleCount,
+                              itemBuilder: (context, index) {
+                                final service = state.services[index];
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        locale == 'ru'
+                                            ? service.nameRu ?? 'Без названия'
+                                            : service.nameRo ?? 'Без названия',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: AppColors.primaryText,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Expanded(
+                                          child: Text('.' * 50, maxLines: 1)),
+                                      Text(
+                                        '${service.price ?? '---'} MDL',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.primaryElement,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          if (state.services.length > 3)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _showFullServiceList = !_showFullServiceList;
+                                });
+                              },
+                              child: Text(
+                                _showFullServiceList
+                                    ? 'Свернуть'
+                                    : 'Показать все',
+                                style: TextStyle(
+                                  color: AppColors.primaryElement,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  }
+                  return SliverToBoxAdapter(child: SizedBox.shrink());
+                },
+              ),
               const SliverToBoxAdapter(
                 child: SizedBox(
                   height: 10,
@@ -352,4 +469,26 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+}
+
+Widget _buildListItem(String text) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.check_circle, size: 16, color: AppColors.primaryStatusOk),
+        SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.primaryText.withAlpha(200),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }

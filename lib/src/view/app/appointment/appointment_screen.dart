@@ -459,7 +459,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                       color: isSelected
                                           ? AppColors.containerBorder
                                           : AppColors.containerColor
-                                              .withOpacity(0.2),
+                                              .withAlpha(50),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: Column(
@@ -468,7 +468,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                           width: 70,
                                           height: 70,
                                           imageUrl:
-                                              '${AppSecrets.baseUrl}/${AppointmentState.pets[index].photo}',
+                                              '${AppSecrets.baseUrl}/uploads/pets/${AppointmentState.pets[index].photo}',
                                           applyImageRadius: true,
                                           isNetworkImage: true,
                                         ),

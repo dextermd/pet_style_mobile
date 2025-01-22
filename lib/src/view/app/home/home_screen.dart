@@ -5,18 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_style_mobile/blocs/faq/faq_bloc.dart';
+import 'package:pet_style_mobile/blocs/promotion/promotion_bloc.dart';
+import 'package:pet_style_mobile/blocs/schedule/schedule_bloc.dart';
 import 'package:pet_style_mobile/blocs/service/service_bloc.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/date_time_helper.dart';
-import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
 import 'package:pet_style_mobile/core/services/firebase_messaging_services.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/appointment_card.dart';
+import 'package:pet_style_mobile/src/view/app/home/widgets/exp_tile.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/home_title.dart';
 import 'package:pet_style_mobile/src/view/app/home/widgets/pet_card.dart';
+import 'package:pet_style_mobile/src/view/app/home/widgets/promo_card.dart';
 import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 import 'package:pet_style_mobile/src/view/widget/base_container.dart';
+import 'package:pet_style_mobile/src/view/widget/custom_sliver_appbar.dart';
 import 'package:pet_style_mobile/src/view/widget/error_loading_text.dart';
+import 'package:pet_style_mobile/src/view/widget/price_info_dialog.dart';
 import 'package:pet_style_mobile/src/view/widget/t_rounded_container.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,13 +35,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late FirebaseMessagingServices _firebaseMessagingServices;
   bool _showFullServiceList = false;
+  bool _showFullFaqList = false;
 
   @override
   void initState() {
     _firebaseMessagingServices = GetIt.I<FirebaseMessagingServices>();
     context.read<UserBloc>().add(const FetchUserData());
-    _firebaseMessagingServices.requestPermission();
     context.read<ServiceBloc>().add(ServiceFetchEvent());
+    context.read<PromotionBloc>().add(PromotionFetchEvent());
+    context.read<FaqBloc>().add(FaqFetchEvent());
+    _firebaseMessagingServices.requestPermission();
 
     super.initState();
   }
@@ -87,8 +96,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 OutlinedButton(
                   onPressed: () async {
                     final completer = Completer();
-                    BlocProvider.of<UserBloc>(context)
-                        .add(FetchUserData(completer: completer));
+                    BlocProvider.of<UserBloc>(context).add(
+                      FetchUserData(completer: completer),
+                    );
                     return completer.future;
                   },
                   child: const Text(
@@ -102,54 +112,19 @@ class _HomeScreenState extends State<HomeScreen> {
         if (state is UserLoaded) {
           return CustomScrollView(
             slivers: [
-              SliverAppBar(
-                pinned: true,
-                snap: true,
-                floating: true,
-                backgroundColor: AppColors.primarySecondElement,
-                elevation: 0,
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child:
-                        state.user.image != null && state.user.image!.isNotEmpty
-                            ? CircleAvatar(
-                                radius: 20,
-                                backgroundImage: NetworkImage(state.user.image
-                                            ?.contains('http') ==
-                                        true
-                                    ? state.user.image ?? ''
-                                    : '${AppSecrets.baseUrl}/uploads/users/${state.user.image}'),
-                              )
-                            : CircleAvatar(
-                                backgroundColor: AppColors.primaryElement,
-                                radius: 20,
-                                child: Icon(
-                                  Icons.person,
-                                  color: AppColors.whiteText,
-                                  size: 24,
-                                ),
-                              ),
-                  ),
-                ],
-                title: Text(
-                  'Привет, ${state.user.name}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primaryText.withAlpha(160),
-                    letterSpacing: 1.2,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                centerTitle: false,
-              ),
+              CustomSliverAppbar(user: state.user),
               CupertinoSliverRefreshControl(
                 onRefresh: () async {
-                  final completer = Completer();
+                  final userDataCompleter = Completer();
+                  final sheduleDataCompleter = Completer();
+
                   context
                       .read<UserBloc>()
-                      .add(FetchUserData(completer: completer));
+                      .add(FetchUserData(completer: userDataCompleter));
+
+                  context
+                      .read<ScheduleBloc>()
+                      .add(ScheduleLoad(completer: sheduleDataCompleter));
                 },
               ),
               const SliverPadding(
@@ -211,106 +186,123 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              if (state.activeAppointments.isNotEmpty) ...[
-                SliverToBoxAdapter(
-                  child: HomeTitle(
-                    title: 'Предстоящие записи',
-                    icon: Icon(
-                      Icons.schedule,
-                      color: AppColors.primaryElement,
-                      size: 24,
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 120,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.only(left: 16, right: 16),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.activeAppointments.length,
-                      separatorBuilder: (context, index) => const SizedBox(
-                        width: 16,
-                      ),
-                      itemBuilder: (context, index) {
-                        return BaseContainer(
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          child: Row(
-                            children: [
-                              TRoundedContainer(
-                                backgroundColor:
-                                    AppColors.containerColor.withAlpha(75),
-                                width: 100,
-                                height: 100,
-                                radius: 10,
-                                margin: const EdgeInsets.all(10),
-                                child: Center(
-                                  child: Text.rich(
-                                    textAlign: TextAlign.center,
-                                    TextSpan(
-                                      text:
-                                          '${DateTimeHelper.getDay(state.activeAppointments[index].appointmentDate!)}\n',
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        color: AppColors.primaryIcon,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+              BlocBuilder<ScheduleBloc, ScheduleState>(
+                builder: (context, state) {
+                  if (state is ScheduleLoaded) {
+                    if (state.active.isNotEmpty) {
+                      return SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            HomeTitle(
+                              title: 'Предстоящие записи',
+                              icon: Icon(
+                                Icons.schedule,
+                                color: AppColors.primaryElement,
+                                size: 24,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 120,
+                              child: ListView.separated(
+                                padding:
+                                    const EdgeInsets.only(left: 16, right: 16),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: state.active.length,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                  width: 16,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return BaseContainer(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    child: Row(
                                       children: [
-                                        TextSpan(
-                                          text: DateTimeHelper.getMonthName(
-                                            state.activeAppointments[index]
-                                                .appointmentDate!,
-                                            'ru',
+                                        TRoundedContainer(
+                                          backgroundColor: AppColors
+                                              .containerColor
+                                              .withAlpha(75),
+                                          width: 100,
+                                          height: 100,
+                                          radius: 10,
+                                          margin: const EdgeInsets.all(10),
+                                          child: Center(
+                                            child: Text.rich(
+                                              textAlign: TextAlign.center,
+                                              TextSpan(
+                                                text:
+                                                    '${DateTimeHelper.getDay(state.active[index].appointmentDate!)}\n',
+                                                style: TextStyle(
+                                                  fontSize: 24,
+                                                  color: AppColors.primaryIcon,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text: DateTimeHelper
+                                                        .getMonthName(
+                                                      state.active[index]
+                                                          .appointmentDate!,
+                                                      'ru',
+                                                    ),
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color:
+                                                          AppColors.primaryIcon,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: AppColors.primaryIcon,
-                                          ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              state.active[index].pet?.name ??
+                                                  '',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: AppColors.primaryText,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              'Время: ${DateTimeHelper.getFormattedTime(state.active[index].appointmentDate!)}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: AppColors.primaryElement,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              'Мастер: Катя',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: AppColors.primaryElement,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    state.activeAppointments[index].pet?.name ??
-                                        '',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppColors.primaryText,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    'Время: ${DateTimeHelper.getFormattedTime(state.activeAppointments[index].appointmentDate!)}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppColors.primaryElement,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    'Мастер: Катя',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppColors.primaryElement,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }
+                  return SliverToBoxAdapter(child: SizedBox.shrink());
+                },
+              ),
               BlocBuilder<ServiceBloc, ServiceState>(
                 builder: (context, state) {
                   if (state is ServiceLoaded && state.services.isNotEmpty) {
@@ -327,64 +319,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               size: 24,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.containerColor.withAlpha(50),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Популярные породы собак и цена стрижки за полный комплекс, в леях.',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color:
-                                          AppColors.primaryText.withAlpha(200),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: 8),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          'Цена услуг варьируется ввиду:',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.primaryText
-                                                .withAlpha(200),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 8),
-                                  _buildListItem('- Плохого поведения собаки'),
-                                  _buildListItem(
-                                      '- Запущенного состояния питомца'),
-                                  _buildListItem('- Более сложной стрижки'),
-                                  SizedBox(height: 12),
-                                  Text(
-                                    'Эти аспекты напрямую влияют на сложность и длительность стрижки.',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontStyle: FontStyle.italic,
-                                      color: AppColors.primaryText,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          // иконка с вопросом и текст для нажатия на нее и открытия диалога с информацией о ценах
+                          IconButton(
+                              onPressed: () {
+                                showPriceInfoDialog(context);
+                              },
+                              icon: Icon(
+                                Icons.help,
+                                color: AppColors.primaryElement,
+                              )),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: ListView.builder(
@@ -451,6 +394,97 @@ class _HomeScreenState extends State<HomeScreen> {
                   return SliverToBoxAdapter(child: SizedBox.shrink());
                 },
               ),
+              BlocBuilder<PromotionBloc, PromotionState>(
+                builder: (context, state) {
+                  if (state is PromotionLoaded && state.promotions.isNotEmpty) {
+                    return SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          HomeTitle(
+                            title: 'Акции и скидки',
+                            icon: Icon(
+                              Icons.local_offer,
+                              color: AppColors.primaryElement,
+                              size: 24,
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: state.promotions.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return PromoCard(
+                                  promo: state.promotions[index],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return SliverToBoxAdapter(child: SizedBox.shrink());
+                },
+              ),
+              BlocBuilder<FaqBloc, FaqState>(
+                builder: (context, state) {
+                  if (state is FaqLoaded && state.faqs.isNotEmpty) {
+                    final visibleCount =
+                        _showFullFaqList ? state.faqs.length : 3;
+
+                    return SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          HomeTitle(
+                            title: 'Вопросы и ответы',
+                            icon: Icon(
+                              Icons.help,
+                              color: AppColors.primaryElement,
+                              size: 24,
+                            ),
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemCount: visibleCount,
+                            itemBuilder: (context, index) {
+                              return ExpTile(
+                                title: locale == 'ru'
+                                    ? state.faqs[index].questionRu ?? ''
+                                    : state.faqs[index].questionRo ?? '',
+                                text: locale == 'ru'
+                                    ? state.faqs[index].answerRu ?? ''
+                                    : state.faqs[index].answerRo ?? '',
+                              );
+                            },
+                          ),
+                          if (state.faqs.length > 3)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _showFullFaqList = !_showFullFaqList;
+                                });
+                              },
+                              child: Text(
+                                _showFullFaqList ? 'Свернуть' : 'Показать все',
+                                style: TextStyle(
+                                  color: AppColors.primaryElement,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  }
+                  return SliverToBoxAdapter(child: SizedBox.shrink());
+                },
+              ),
               const SliverToBoxAdapter(
                 child: SizedBox(
                   height: 10,
@@ -469,26 +503,4 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-}
-
-Widget _buildListItem(String text) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4.0),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(Icons.check_circle, size: 16, color: AppColors.primaryStatusOk),
-        SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.primaryText.withAlpha(200),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }

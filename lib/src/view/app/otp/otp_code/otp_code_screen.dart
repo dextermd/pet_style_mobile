@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pet_style_mobile/blocs/otp/otp_bloc.dart';
 import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
+import 'package:pet_style_mobile/src/data/model/update_user_request/update_user_request.dart';
 import 'package:pet_style_mobile/src/utils/app_utils.dart';
 import 'package:pet_style_mobile/src/view/app/menu/app_bar_back.dart';
 import 'package:pet_style_mobile/src/view/widget/my_button.dart';
@@ -15,11 +16,13 @@ import 'package:pet_style_mobile/src/view/widget/my_button.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpCodeScreen extends StatefulWidget {
-  final String phone;
+  final String? phone;
+  final UpdateUserRequest? updateUser;
 
   const OtpCodeScreen({
     super.key,
-    required this.phone,
+    this.phone,
+    this.updateUser,
   });
 
   @override
@@ -36,6 +39,8 @@ class _OtpCodeScreenState extends State<OtpCodeScreen> {
   @override
   void initState() {
     startTimer();
+    logDebug('Phone: ${widget.phone}');
+    logDebug('Update User: ${widget.updateUser}');
     super.initState();
   }
 
@@ -66,9 +71,11 @@ class _OtpCodeScreenState extends State<OtpCodeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarBack(onPressed: () {
-        context.pop();
-      }),
+      appBar: AppBarBack(
+        onPressed: () {
+          context.pop();
+        },
+      ),
       body: BlocListener<OtpBloc, OtpState>(
         listener: (context, state) {
           if (state is OtpVerifyError) {
@@ -107,7 +114,7 @@ class _OtpCodeScreenState extends State<OtpCodeScreen> {
                           height: 15,
                         ),
                         Text(
-                          "Мы отправили вам код подтверждения на номер телефона +373${widget.phone}",
+                          "Мы отправили вам код подтверждения на номер телефона +373${widget.phone ?? widget.updateUser?.updateUser?.phone}",
                           style: const TextStyle(
                             fontSize: 16,
                             color: AppColors.primaryText,
@@ -124,15 +131,14 @@ class _OtpCodeScreenState extends State<OtpCodeScreen> {
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
-                                color:
-                                    AppColors.containerColor.withOpacity(0.5),
+                                color: AppColors.containerColor.withAlpha(120),
                                 borderRadius: BorderRadius.circular(5),
                                 border: Border.all(
                                     color: AppColors.primaryElement)),
                             textStyle: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.primaryText.withOpacity(0.8),
+                              color: AppColors.primaryText.withAlpha(200),
                             ),
                           ),
                           onCompleted: (value) {
@@ -151,13 +157,27 @@ class _OtpCodeScreenState extends State<OtpCodeScreen> {
                             width: double.infinity,
                             onPressed: () {
                               if (otpCode != null) {
-                                logDebug("OTP code: $otpCode");
-                                context.read<OtpBloc>().add(
-                                      OtpVerifyEvent(
-                                        widget.phone,
-                                        otpCode!,
-                                      ),
-                                    );
+                                if (widget.phone != null) {
+                                  context.read<OtpBloc>().add(
+                                        OtpVerifyEvent(
+                                          widget.phone ?? '',
+                                          otpCode!,
+                                          updateUserRequest: null,
+                                        ),
+                                      );
+                                } else {
+                                  if (widget.updateUser != null) {
+                                    context.read<OtpBloc>().add(
+                                          OtpVerifyEvent(
+                                            widget
+                                                .updateUser!.updateUser!.phone,
+                                            otpCode!,
+                                            updateUserRequest:
+                                                widget.updateUser,
+                                          ),
+                                        );
+                                  }
+                                }
                               }
                             },
                             text: "Подтвердить",
@@ -183,6 +203,12 @@ class _OtpCodeScreenState extends State<OtpCodeScreen> {
                                         fontWeight: FontWeight.w400),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
+                                        if (widget.phone != null) {
+                                          context.read<OtpBloc>().add(
+                                                OtpSendEvent(
+                                                    widget.phone ?? ''),
+                                              );
+                                        }
                                         setState(() {
                                           resendTime = 60;
                                         });

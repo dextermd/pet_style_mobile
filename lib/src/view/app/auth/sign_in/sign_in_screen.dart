@@ -9,8 +9,10 @@ import 'package:pet_style_mobile/blocs/localization/localization_bloc.dart';
 import 'package:pet_style_mobile/blocs/sign_in/sign_in_bloc.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/core/values/strings.dart';
+import 'package:pet_style_mobile/gen/assets.gen.dart';
 import 'package:pet_style_mobile/l10n/l10n.dart';
 import 'package:pet_style_mobile/src/utils/app_utils.dart';
+import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 import 'package:pet_style_mobile/src/view/widget/my_button.dart';
 import 'package:pet_style_mobile/src/view/widget/my_text_field.dart';
 
@@ -59,7 +61,7 @@ class _SignInScreenState extends State<SignInScreen> {
         if (state is SignInSuccess) {
           setState(() {
             signInRequired = true;
-            context.go('/splash');
+            context.goNamed(AppRoutes.splash);
           });
         } else if (state is SignInProcess) {
           setState(() {
@@ -68,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
         } else if (state is SignInFailure) {
           setState(() {
             signInRequired = false;
-            _errorMsg = 'Invalid email or password';
+            AppUtils.showToastError(context, '', state.message ?? '');
           });
         }
       },
@@ -106,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   child: MyTextField(
                                     controller: _emailController,
                                     focusNode: _emailFocusNode,
-                                    hintText: 'Enter your email adress',
+                                    hintText: 'Введите ваш email',
                                     obscureText: false,
                                     keyboardType: TextInputType.emailAddress,
                                     prefixIcon: const Icon(
@@ -116,9 +118,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                     errorMsg: _errorMsg,
                                     validator: (val) {
                                       if (val!.isEmpty) {
-                                        return 'Please fill in this firld';
+                                        return 'Пожалуйста, заполните это поле';
                                       } else if (!emailRexExp.hasMatch(val)) {
-                                        return 'Please enter a valid email';
+                                        return 'Неверный формат электронной почты';
                                       }
                                       return null;
                                     },
@@ -131,7 +133,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   child: MyTextField(
                                     controller: _passwordController,
                                     focusNode: _passwordFocusNode,
-                                    hintText: 'Password',
+                                    hintText: 'Введите ваш пароль',
                                     obscureText: obscurePassword,
                                     keyboardType: TextInputType.visiblePassword,
                                     prefixIcon: const Icon(
@@ -141,7 +143,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     errorMsg: _errorMsg,
                                     validator: (val) {
                                       if (val!.isEmpty) {
-                                        return 'Please fill in this firld';
+                                        return 'Пожалуйста, заполните это поле';
                                       }
                                       return null;
                                     },
@@ -171,7 +173,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   height: 25,
                                   child: GestureDetector(
                                     onTap: () {},
-                                    child: const Text("Forgot password?",
+                                    child: const Text("Восстановить пароль?",
                                         style: TextStyle(
                                           color: AppColors.primarySecondText,
                                         )),
@@ -183,7 +185,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.9,
-                                        text: 'Log In',
+                                        text: 'Войти',
                                         onPressed: () async {
                                           if (_formSignIn.currentState!
                                               .validate()) {
@@ -213,7 +215,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10.0),
                                         child: Text(
-                                          'Or continue with',
+                                          'Или войдите через',
                                           style: TextStyle(
                                               color:
                                                   AppColors.primarySecondText),
@@ -228,22 +230,25 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 50),
+                                const SizedBox(height: 20),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     GestureDetector(
-                                        onTap: () {
-                                          context
-                                              .read<SignInBloc>()
-                                              .add(GoogleSignInRequired());
-                                        },
-                                        child: const SquareTile(
-                                            imagePath:
-                                                'assets/images/google.png')),
+                                      onTap: () {
+                                        context
+                                            .read<SignInBloc>()
+                                            .add(GoogleSignInRequired());
+                                      },
+                                      child: SquareTile(
+                                        image: Assets.images.google
+                                            .image(height: 40),
+                                      ),
+                                    ),
                                     const SizedBox(width: 25),
-                                    const SquareTile(
-                                        imagePath: 'assets/images/apple.png')
+                                    SquareTile(
+                                      image: Assets.icons.fb.svg(height: 50),
+                                    )
                                   ],
                                 ),
                                 const SizedBox(height: 30),
@@ -251,7 +256,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Text(
-                                      'Not a member?',
+                                      'У вас нет аккаунта?',
                                       style: TextStyle(
                                           color: AppColors.primarySecondText),
                                     ),
@@ -261,7 +266,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                         context.goNamed('sign_up');
                                       },
                                       child: Text(
-                                        'Register now',
+                                        'Зарегистрироваться',
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium,

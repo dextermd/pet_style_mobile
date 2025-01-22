@@ -5,21 +5,23 @@ class AppBarBack extends StatelessWidget implements PreferredSizeWidget {
   final Function() onPressed;
   final String? title;
   final double toolbarHeight;
+  final Color? backgroundColor;
 
   const AppBarBack({
     super.key,
     required this.onPressed,
     this.title,
     this.toolbarHeight = 60,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.primarySecondElement,
-      foregroundColor: Colors.transparent,
-      shadowColor: Colors.transparent,
-      surfaceTintColor: Colors.transparent,
+      backgroundColor: backgroundColor ??AppColors.primarySecondElement,
+      shadowColor: AppColors.primarySecondElement,
+      foregroundColor: AppColors.primarySecondElement,
+      surfaceTintColor: AppColors.primarySecondElement,
       automaticallyImplyLeading: false,
       elevation: 0,
       toolbarHeight: toolbarHeight,
@@ -42,8 +44,8 @@ class AppBarBack extends StatelessWidget implements PreferredSizeWidget {
       title: Text(
         title ?? '',
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              fontWeight: FontWeight.w500,
-              color: AppColors.primaryText.withOpacity(0.6),
+              fontWeight: FontWeight.w400,
+              color: AppColors.primaryText.withAlpha(200),
             ),
       ),
     );

@@ -42,3 +42,13 @@ final class PhoneNumberUpdateError extends OtpState {
   @override
   List<Object> get props => [message];
 }
+
+final class OtpUserUpdated extends OtpState {}
+
+final class OtpUserUpdateError extends OtpState {
+  final String message;
+  const OtpUserUpdateError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

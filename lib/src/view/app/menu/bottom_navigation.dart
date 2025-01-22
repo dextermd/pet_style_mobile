@@ -64,8 +64,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       elevation: 1,
       constraints: const BoxConstraints(
-        minWidth: 50,
-        maxWidth: 50,
+        minWidth: 70,
+        maxWidth: 70,
+      ),
+      menuPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
       ),
       color: AppColors.primarySecondElement,
       shadowColor: AppColors.primaryTransparent,
@@ -120,7 +124,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
               elevation: 1,
               onTap: changeTab,
               backgroundColor: AppColors.primarySecondElement,
-              selectedItemColor: AppColors.primaryLinkActive,
+              selectedItemColor: AppColors.whiteText,
               unselectedItemColor: AppColors.primaryText.withAlpha(200),
               currentIndex: currentIndex,
               type: BottomNavigationBarType.fixed,

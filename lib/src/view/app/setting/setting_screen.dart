@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_style_mobile/blocs/localization/localization_bloc.dart';
+import 'package:pet_style_mobile/blocs/otp/otp_bloc.dart';
 import 'package:pet_style_mobile/blocs/sign_in/sign_in_bloc.dart';
 import 'package:pet_style_mobile/blocs/user/user_bloc.dart';
 import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
@@ -50,26 +51,43 @@ class _SettingScreenState extends State<SettingScreen> {
         title: 'Настройки',
       ),
       body: SingleChildScrollView(
-        child: BlocListener<UserBloc, UserState>(
-          listener: (context, state) {
-            if (state is UpdateUserDataError) {
-              AppUtils.showToastError(context, '', state.message);
-            }
-            if (state is UserUpdated) {
-              context.pop();
-              context.read<UserBloc>().add(FetchUserData());
-              AppUtils.showToastSuccess(context, 'Успешно', 'Профиль обновлен');
-            }
-            if (state is ImageUpdated) {
-              context.read<UserBloc>().add(FetchUserData());
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<UserBloc, UserState>(
+              listener: (context, state) {
+                if (state is UpdateUserDataError) {
+                  AppUtils.showToastError(context, '', state.message);
+                }
+                if (state is UserUpdated) {
+                  context.pop();
+                  context.read<UserBloc>().add(FetchUserData());
+                  AppUtils.showToastSuccess(
+                      context, 'Успешно', 'Профиль обновлен');
+                }
+                if (state is ImageUpdated) {
+                  context.read<UserBloc>().add(FetchUserData());
 
-              AppUtils.showToastSuccess(
-                  context, 'Успешно', 'Изображение обновлено');
-            }
-            if (state is UpdateImageError) {
-              AppUtils.showToastError(context, '', state.message);
-            }
-          },
+                  AppUtils.showToastSuccess(
+                      context, 'Успешно', 'Изображение обновлено');
+                }
+                if (state is UpdateImageError) {
+                  AppUtils.showToastError(context, '', state.message);
+                }
+              },
+            ),
+            BlocListener<OtpBloc, OtpState>(
+              listener: (context, state) {
+                if (state is OtpUserUpdated) {
+                  context.pop();
+                  context.read<UserBloc>().add(FetchUserData());
+                  AppUtils.showToastSuccess(
+                      context, 'Успешно', 'Профиль обновлен');
+                } else if (state is OtpUserUpdateError) {
+                  AppUtils.showToastError(context, '', state.message);
+                }
+              },
+            ),
+          ],
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20.h),
             child: Column(

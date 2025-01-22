@@ -14,8 +14,7 @@ final class UserLoading extends UserState {}
 final class UserLoaded extends UserState {
   final User user;
   final List<Pet> pets;
-  final List<Appointment> activeAppointments;
-  const UserLoaded(this.user, this.pets, this.activeAppointments);
+  const UserLoaded(this.user, this.pets);
 
   @override
   List<Object> get props => [user, pets, ];

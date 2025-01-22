@@ -25,8 +25,8 @@ class AppBarTabs extends StatelessWidget implements PreferredSizeWidget {
       title: Text(
         title,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              fontWeight: FontWeight.w500,
-              color: AppColors.primaryText.withOpacity(0.6),
+              fontWeight: FontWeight.w400,
+              color: AppColors.primaryText.withAlpha(200),
             ),
       ),
       bottom: bottomTabs,

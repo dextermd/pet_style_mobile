@@ -66,6 +66,7 @@ class MyTextField extends StatelessWidget {
         contentPadding: EdgeInsets.all(contentPadding),
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
+        errorMaxLines: 4,
         fillColor: AppColors.containerColor.withOpacity(0.2),
         filled: true,
         hintText: hintText,

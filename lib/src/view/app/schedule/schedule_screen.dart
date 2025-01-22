@@ -42,18 +42,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         appBar: AppBarTabs(
           title: 'Мои записи',
           bottomTabs: TabBar(
-            unselectedLabelColor: AppColors.primaryHintText,
-            labelColor: AppColors.primaryText.withAlpha(160),
+            unselectedLabelColor: AppColors.primaryText.withAlpha(200),
+            labelColor: AppColors.whiteText,
             indicatorSize: TabBarIndicatorSize.tab,
             labelStyle: Theme.of(context).textTheme.bodyLarge,
             labelPadding: const EdgeInsets.symmetric(horizontal: 10),
             dividerColor: AppColors.primaryElement,
             indicatorColor: AppColors.primaryElement,
-            indicatorWeight: 3,
+            indicatorWeight: 2,
             tabs: [
               Tab(text: 'Текущие'),
               Tab(text: 'Завершенные'),
-              Tab(text: 'Отмененные'),
             ],
           ),
         ),
@@ -186,23 +185,23 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     )
                   else
                     const SizedBox.shrink(),
-                  if (state is ScheduleLoaded)
-                    ListView.builder(
-                      itemCount: state.canceled.length,
-                      itemBuilder: (context, index) {
-                        return ScheduleCardFiltered(
-                          time: DateTimeHelper.getFormattedTime(
-                              state.canceled[index].appointmentDate!),
-                          date: DateTimeHelper.getFormattedDate(
-                              state.canceled[index].appointmentDate!),
-                          petName: state.canceled[index].pet?.name ?? '',
-                          breed: state.canceled[index].pet?.breed ?? '',
-                          isCancelled: state.canceled[index].status == 2,
-                        );
-                      },
-                    )
-                  else
-                    const SizedBox.shrink(),
+                  // if (state is ScheduleLoaded)
+                  //   ListView.builder(
+                  //     itemCount: state.canceled.length,
+                  //     itemBuilder: (context, index) {
+                  //       return ScheduleCardFiltered(
+                  //         time: DateTimeHelper.getFormattedTime(
+                  //             state.canceled[index].appointmentDate!),
+                  //         date: DateTimeHelper.getFormattedDate(
+                  //             state.canceled[index].appointmentDate!),
+                  //         petName: state.canceled[index].pet?.name ?? '',
+                  //         breed: state.canceled[index].pet?.breed ?? '',
+                  //         isCancelled: state.canceled[index].status == 2,
+                  //       );
+                  //     },
+                  //   )
+                  // else
+                  //   const SizedBox.shrink(),
                 ],
               );
             },

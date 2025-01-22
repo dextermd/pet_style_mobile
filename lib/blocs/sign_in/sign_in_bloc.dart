@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -23,6 +25,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
         }
       } on Exception catch (e, st) {
         emit(const SignInFailure());
+        emit(SignInInitial());
         logHandle(e.toString(), st);
       }
     });
@@ -42,6 +45,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
 
           if (googleAuth.idToken == null) {
             emit(const SignInFailure(message: 'Token NULL'));
+            emit(SignInInitial());
             await _googleSignIn.signOut();
             return;
           }
@@ -52,15 +56,18 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
             emit(SignInSuccess());
           } else {
             emit(const SignInFailure(message: 'Authentication failed'));
+            emit(SignInInitial());
             await _googleSignIn.signOut();
           }
         } else {
           emit(const SignInFailure(message: 'Google sign-in canceled'));
+          emit(SignInInitial());
           await _googleSignIn.signOut();
         }
       } catch (error, stackTrace) {
         logHandle('GoogleSignInError: $error', stackTrace);
         emit(const SignInFailure(message: 'Google sign-in failed'));
+        emit(SignInInitial());
         await _googleSignIn.signOut();
       }
     });

@@ -130,9 +130,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               'Успешно',
               'Вы успешно обновили запись на прием, дата и время: ${DateFormat.yMMMMd('ru').format(_selectedDate!)} ${_selectedSlot!}',
             );
-            context
-                .read<AppointmentBloc>()
-                .add(SendNotificationToGroomerEvent('123', 'title', 'body'));
+            // context
+            //     .read<AppointmentBloc>()
+            //     .add(SendNotificationToGroomerEvent('123', 'title', 'body'));
           }
         },
         child: BlocBuilder<AppointmentBloc, AppointmentState>(

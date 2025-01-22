@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pet_style_mobile/src/data/model/user/user.dart';
+import 'package:pet_style_mobile/src/data/model/auth_response/auth_response.dart';
 import 'package:pet_style_mobile/src/domain/repository/auth_repository.dart';
 
 part 'sign_up_event.dart';
@@ -14,13 +14,23 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<SignUpRequired>((event, emit) async {
       emit(SignUpProcess());
       try {
-        //AuthResponse authResponse = await authRepository.login(event.user, event.password);
-        //await _authRepository.setUserData(user);
+        final AuthResponse? authResponse = await authRepository.register(
+          event.name,
+          event.email,
+          event.password,
+        );
+
+        if (authResponse == null) {
+          emit(SignUpFailure(message: 'Что-то пошло не так, попробуйте позже'));
+          emit(SignUpInitial());
+          return;
+        }
 
         emit(SignUpSuccess());
       } catch (e) {
         log(e.toString());
-        emit(SignUpFailure());
+        emit(SignUpFailure(message: e.toString()));
+        emit(SignUpInitial());
       }
     });
   }

@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/services/storage_services.dart';
 import 'package:pet_style_mobile/src/data/model/appointment/appointment.dart';
+import 'package:pet_style_mobile/src/data/model/promotion/promotion.dart';
+import 'package:pet_style_mobile/src/data/model/update_user_request/update_user_request.dart';
+import 'package:pet_style_mobile/src/data/model/user/user.dart';
 import 'package:pet_style_mobile/src/view/app/appointment/appointment_screen.dart';
 import 'package:pet_style_mobile/src/view/app/auth/sign_in/sign_in_screen.dart';
 import 'package:pet_style_mobile/src/view/app/auth/sign_up/sign_up_screen.dart';
@@ -14,6 +17,7 @@ import 'package:pet_style_mobile/src/view/app/onboarding/onboarding_screen.dart'
 import 'package:pet_style_mobile/src/view/app/otp/otp_code/otp_code_screen.dart';
 import 'package:pet_style_mobile/src/view/app/otp/phone_verification/phone_verification_screen.dart';
 import 'package:pet_style_mobile/src/view/app/pet_form/pet_form_screen.dart';
+import 'package:pet_style_mobile/src/view/app/promotion_details/promotion_details_screen.dart';
 import 'package:pet_style_mobile/src/view/app/schedule/schedule_screen.dart';
 import 'package:pet_style_mobile/src/view/app/setting/edit_profile/edit_profile_screen.dart';
 import 'package:pet_style_mobile/src/view/app/setting/setting_screen.dart';
@@ -79,6 +83,14 @@ class AppRouter {
                 parentNavigatorKey: _shellNavigatorKey,
               ),
               GoRoute(
+                path: AppRoutes.promotionDetails,
+                name: AppRoutes.promotionDetails,
+                builder: (context, state) => PromotionDetailsScreen(
+                  promo: state.extra as Promotion,
+                ),
+                parentNavigatorKey: _shellNavigatorKey,
+              ),
+              GoRoute(
                 path: AppRoutes.appointment,
                 name: AppRoutes.appointment,
                 builder: (context, state) => const AppointmentScreen(),
@@ -93,9 +105,11 @@ class AppRouter {
                       GoRoute(
                         path: AppRoutes.otpCode,
                         name: AppRoutes.otpCode,
-                        builder: (context, state) => OtpCodeScreen(
-                          phone: state.extra as String,
-                        ),
+                        builder: (context, state) {
+                          return OtpCodeScreen(
+                            updateUser: state.extra as UpdateUserRequest,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -134,6 +148,15 @@ class AppRouter {
                 path: AppRoutes.editProfile,
                 name: AppRoutes.editProfile,
                 builder: (context, state) => const EditProfileScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.verifyCode,
+                    name: AppRoutes.verifyCode,
+                    builder: (context, state) => OtpCodeScreen(
+                      updateUser: state.extra as UpdateUserRequest,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -156,6 +179,8 @@ class AppRouter {
         AppRoutes.otpCodePath,
         AppRoutes.editSchedulePath,
         AppRoutes.editProfilePath,
+        AppRoutes.verifyCodePath,
+        AppRoutes.promotionDetailsPath
       ];
       if (!isLoggedIn && protectedRoutes.contains(state.matchedLocation)) {
         return AppRoutes.signInPath;

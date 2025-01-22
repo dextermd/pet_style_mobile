@@ -8,6 +8,7 @@ import 'package:pet_style_mobile/core/values/constants.dart';
 import 'package:pet_style_mobile/src/view/app/onboarding/widgets/into_page_one.dart';
 import 'package:pet_style_mobile/src/view/app/onboarding/widgets/into_page_three.dart';
 import 'package:pet_style_mobile/src/view/app/onboarding/widgets/into_page_two.dart';
+import 'package:pet_style_mobile/src/view/router/app_routes.dart';
 
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -77,9 +78,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ? GestureDetector(
                         child: const Text('done'),
                         onTap: () async {
-                          context.goNamed('splash');
                           await _storageServices.setBool(
                               AppConstants.STORAGE_SHOW_ONBOARDING, false);
+                          setState(() {
+                            context.goNamed(AppRoutes.splash);
+                          });
                         },
                       )
                     : GestureDetector(
@@ -137,30 +140,11 @@ class OnboardPage extends StatelessWidget {
           child: Text(
             subtitle,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppColors.primaryText.withOpacity(0.5),
+                  color: AppColors.primaryText.withAlpha(120),
                 ),
           ),
         ),
         SizedBox(height: 75.h),
-        // MyButton(
-        //   text: buttonName,
-        //   onPressed: () async {
-        //     if (index < 3) {
-        //       pageController.animateToPage(index,
-        //           duration: const Duration(milliseconds: 400),
-        //           curve: Curves.easeIn);
-        //     } else {
-        //       try {
-        //         context.goNamed('sign_in');
-        //         await StorageServices.setBool(
-        //             AppConstants.STORAGE_SHOW_ONBOARDING, false);
-        //         log("The value is ${StorageServices.getDeviceOnboardingOpen()}");
-        //       } catch (e) {
-        //         log('Failed to navigate: $e');
-        //       }
-        //     }
-        //   },
-        // ),
       ],
     );
   }

@@ -102,6 +102,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/RU.svg
   SvgGenImage get ru => const SvgGenImage('assets/icons/RU.svg');
 
+  /// File path: assets/icons/fb.svg
+  SvgGenImage get fb => const SvgGenImage('assets/icons/fb.svg');
+
   /// File path: assets/icons/teleg.svg
   SvgGenImage get teleg => const SvgGenImage('assets/icons/teleg.svg');
 
@@ -112,7 +115,7 @@ class $AssetsIconsGen {
   SvgGenImage get whats => const SvgGenImage('assets/icons/whats.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [ro, ru, teleg, viber, whats];
+  List<SvgGenImage> get values => [ro, ru, fb, teleg, viber, whats];
 }
 
 class $AssetsImagesGen {

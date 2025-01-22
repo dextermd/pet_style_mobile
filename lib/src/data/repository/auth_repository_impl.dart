@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_style_mobile/core/helpers/api_exception.dart';
 import 'package:pet_style_mobile/core/helpers/log_helper.dart';
 import 'package:pet_style_mobile/core/secrets/app_secrets.dart';
 import 'package:pet_style_mobile/core/services/storage_services.dart';
 import 'package:pet_style_mobile/core/values/constants.dart';
 import 'package:pet_style_mobile/src/data/model/auth_response/auth_response.dart';
-import 'package:pet_style_mobile/src/data/model/user/user.dart';
 import 'package:pet_style_mobile/src/domain/repository/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -50,8 +50,38 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResponse> register(User user) {
-    throw UnimplementedError();
+  Future<AuthResponse?> register(
+      String name, String email, String password) async {
+    try {
+      final Response response = await dio.post(AppSecrets.registerUrl,
+          data: json.encode({
+            'email': email,
+            'password': password,
+            'name': name,
+          }));
+
+      final Map<String, dynamic> data = response.data;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        AuthResponse authResponse = AuthResponse.fromJson(data);
+
+        await _storageServices.setString(
+            AppConstants.STORAGE_ACCESS_TOKEN, authResponse.accessToken!);
+        await _storageServices.setString(
+            AppConstants.STORAGE_REFRESH_TOKEN, authResponse.refreshToken!);
+        await _storageServices.setString(
+            AppConstants.STORAGE_USER_ID, authResponse.user?.id ?? '');
+        await _storageServices.setBool(
+            AppConstants.STORAGE_SHOW_ONBOARDING, false);
+
+        return authResponse;
+      }
+    } on DioException catch (e, st) {
+      logHandle(e.toString(), st);
+      throw ApiException.checkException(e);
+    } catch (e) {
+      throw Exception('Failed to send otp');
+    }
+    return null;
   }
 
   @override
@@ -73,9 +103,11 @@ class AuthRepositoryImpl implements AuthRepository {
       await dio.post(
         AppSecrets.logoutUrl,
       );
+    } on DioException catch (e, st) {
+      logHandle(e.toString(), st);
+      throw ApiException.checkException(e);
     } catch (e) {
-      logDebug(e.toString());
-      rethrow;
+      throw Exception('Failed to send otp');
     } finally {
       await logOutUI();
     }
@@ -108,9 +140,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
         return authResponse;
       }
-    } catch (e, st) {
+    } on DioException catch (e, st) {
       logHandle(e.toString(), st);
-      rethrow;
+      throw ApiException.checkException(e);
+    } catch (e) {
+      throw Exception('Failed to send otp');
     }
     return null;
   }
@@ -140,9 +174,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
         return authResponse;
       }
-    } catch (e, st) {
+    } on DioException catch (e, st) {
       logHandle(e.toString(), st);
-      rethrow;
+      throw ApiException.checkException(e);
+    } catch (e) {
+      throw Exception('Failed to send otp');
     }
     return null;
   }

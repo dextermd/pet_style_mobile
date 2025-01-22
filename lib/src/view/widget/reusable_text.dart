@@ -16,7 +16,7 @@ class ReusableText extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 5.h),
       child: Text(
         text,
-        style: const TextStyle(color: AppColors.primarySecondText),
+        style: TextStyle(color: AppColors.primaryText.withAlpha(200)),
       ),
     );
   }

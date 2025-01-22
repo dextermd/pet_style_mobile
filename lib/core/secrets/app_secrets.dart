@@ -1,6 +1,6 @@
 class AppSecrets {
-  static const baseUrl = 'https://petstyle.dextermd.dev'; // Production
-  //static const baseUrl = 'http://192.168.18.127:3000'; // RD Home
+  //static const baseUrl = 'https://petstyle.dextermd.dev'; // Production
+  static const baseUrl = 'http://192.168.18.127:3000'; // RD Home
   //static const String baseUrl = 'http://192.168.94.20:3000'; // RD Office
 
   // Auth

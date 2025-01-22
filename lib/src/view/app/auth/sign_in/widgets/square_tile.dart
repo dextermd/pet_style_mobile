@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 
 class SquareTile extends StatelessWidget {
-  final String imagePath;
+  final Widget image;
   const SquareTile({
     super.key,
-    required this.imagePath,
+    required this.image,
   });
 
   @override
@@ -13,14 +13,11 @@ class SquareTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.primaryEnabledBorder),
+        border: Border.all(color: AppColors.containerColor.withAlpha(100)),
         borderRadius: BorderRadius.circular(16),
-        color:  AppColors.primarySecondBackground,
+        color: AppColors.containerColor.withAlpha(50),
       ),
-      child: Image.asset(
-        imagePath,
-        height: 40,
-      ),
+      child: image,
     );
   }
 }

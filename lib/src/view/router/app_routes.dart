@@ -21,6 +21,9 @@ class AppRoutes {
   static const String petForm = 'pet_form';
   static const String petFormPath = '$homePath/$petForm';
 
+  static const String promotionDetails = 'promotion_details';
+  static const String promotionDetailsPath = '$homePath/$promotionDetails';
+
   static const String appointment = 'appointment';
   static const String appointmentPath = '$homePath/$appointment';
 
@@ -45,4 +48,10 @@ class AppRoutes {
 
   static const String editProfile = 'edit_profile';
   static const String editProfilePath = '$settingPath/$editProfile';
+
+  static const String verifyCode = 'verify_code';
+  static const String verifyCodePath = '$editProfilePath/$verifyCode';
+
+
+
 }

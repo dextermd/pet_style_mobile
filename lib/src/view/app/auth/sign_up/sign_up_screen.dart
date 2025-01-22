@@ -2,14 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_style_mobile/blocs/sign_up/sign_up_bloc.dart';
 import 'package:pet_style_mobile/core/theme/colors.dart';
 import 'package:pet_style_mobile/core/values/strings.dart';
-import 'package:pet_style_mobile/src/view/widget/app_bar_auth.dart';
-import 'package:pet_style_mobile/src/view/widget/my_button.dart';
+import 'package:pet_style_mobile/src/utils/app_utils.dart';
+import 'package:pet_style_mobile/src/view/app/menu/app_bar_back.dart';
+import 'package:pet_style_mobile/src/view/router/app_routes.dart';
+import 'package:pet_style_mobile/src/view/widget/my_elevation_button.dart';
 import 'package:pet_style_mobile/src/view/widget/my_text_field.dart';
 import 'package:pet_style_mobile/src/view/widget/reusable_text.dart';
-
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -66,27 +68,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
       listener: (context, state) {
         if (state is SignUpSuccess) {
           setState(() {
-            signUpRequired = true;
+            signUpRequired = false;
+            context.goNamed(AppRoutes.splash);
           });
+
+          AppUtils.showToastSuccess(
+              context, '', 'Вы успешно зарегистрировались');
         } else if (state is SignUpProcess) {
           setState(() {
             signUpRequired = true;
           });
         } else if (state is SignUpFailure) {
           setState(() {
-            return;
+            signUpRequired = false;
           });
+          AppUtils.showToastError(context, '', state.message);
         }
       },
       child: Scaffold(
-        appBar: const AppBarAuth(title: 'Sign Up'),
+        appBar: AppBarBack(
+          title: 'Регистрация',
+          backgroundColor: AppColors.primaryTransparent,
+          onPressed: () {
+            context.pop();
+          },
+        ),
         body: GestureDetector(
           onTap: () {
             _nameFocusNode.unfocus();
             _emailFocusNode.unfocus();
             _passwordFocusNode.unfocus();
             _confirmPasswordFocusNode.unfocus();
-            
           },
           child: SafeArea(
             child: SingleChildScrollView(
@@ -95,8 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   SizedBox(height: 10.h),
                   const Center(
-                    child: ReusableText(
-                        text: 'Enter your details below & free sign up'),
+                    child: ReusableText(text: 'Введите данные для регистрации'),
                   ),
                   SizedBox(height: 30.h),
                   Container(
@@ -107,13 +118,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const ReusableText(text: 'Name'),
+                          const ReusableText(text: 'Имя'),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.9,
                             child: MyTextField(
                               controller: _nameController,
                               focusNode: _nameFocusNode,
-                              hintText: 'Enter your name',
+                              hintText: 'Введите ваше имя',
                               obscureText: false,
                               keyboardType: TextInputType.name,
                               prefixIcon:
@@ -121,53 +132,53 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               errorMsg: _errorMsg,
                               validator: (val) {
                                 if (val!.isEmpty) {
-                                  return 'Please fill in this field';
+                                  return 'Пожалуйста, заполните это поле';
                                 } else if (val.length > 30) {
-                                  return 'Name to long';
+                                  return 'Имя не должно превышать 30 символов';
                                 }
                                 return null;
                               },
                             ),
                           ),
                           SizedBox(height: 10.h),
-                          const ReusableText(text: 'Email'),
+                          const ReusableText(text: 'Емаил'),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.9,
                             child: MyTextField(
                               controller: _emailController,
                               focusNode: _emailFocusNode,
-                              hintText: 'Enter your email adress',
+                              hintText: 'Введите ваш email',
                               obscureText: false,
                               keyboardType: TextInputType.emailAddress,
                               prefixIcon: const Icon(CupertinoIcons.mail_solid),
                               errorMsg: _errorMsg,
                               validator: (val) {
                                 if (val!.isEmpty) {
-                                  return 'Please fill in this firld';
+                                  return 'Пожалуйста, заполните это поле';
                                 } else if (!emailRexExp.hasMatch(val)) {
-                                  return 'Please enter a valid email';
+                                  return 'Пожалуйста, введите действительный email';
                                 }
                                 return null;
                               },
                             ),
                           ),
                           SizedBox(height: 10.h),
-                          const ReusableText(text: 'Password'),
+                          const ReusableText(text: 'Пароль'),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.9,
                             child: MyTextField(
                               controller: _passwordController,
                               focusNode: _passwordFocusNode,
-                              hintText: 'Password',
+                              hintText: 'Введите пароль',
                               obscureText: obscurePassword,
                               keyboardType: TextInputType.visiblePassword,
                               prefixIcon: const Icon(CupertinoIcons.lock_fill),
                               errorMsg: _errorMsg,
                               validator: (val) {
                                 if (val!.isEmpty) {
-                                  return 'Please fill in this firld';
+                                  return 'Пожалуйста, заполните это поле';
                                 } else if (!passwordRexExp.hasMatch(val)) {
-                                  return 'Please enter a valid password';
+                                  return 'Пожалуйста, введите действительный пароль\nПароль должен содержать не менее 8 символов, включая цифры, заглавные и строчные буквы';
                                 }
                                 return null;
                               },
@@ -188,24 +199,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           SizedBox(height: 10.h),
-                          const ReusableText(text: 'Confirm Password'),
+                          const ReusableText(text: 'Подтвердите пароль'),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.9,
                             child: MyTextField(
                               controller: _confirmPasswordController,
                               focusNode: _confirmPasswordFocusNode,
-                              hintText: 'Confirm Password',
+                              hintText: 'Подтвердите пароль',
                               obscureText: obscureConfirmPassword,
                               keyboardType: TextInputType.visiblePassword,
                               prefixIcon: const Icon(CupertinoIcons.lock_fill),
                               errorMsg: _errorMsg,
                               validator: (val) {
                                 if (val!.isEmpty) {
-                                  return 'Please fill in this firld';
+                                  return 'Пожалуйста, заполните это поле';
                                 } else if (!passwordRexExp.hasMatch(val)) {
-                                  return 'Please enter a valid password';
+                                  return 'Пожалуйста, введите действительный пароль\nПароль должен содержать не менее 8 символов, включая цифры, заглавные и строчные буквы';
                                 } else if (val != _passwordController.text) {
-                                  return 'Passwords do not match';
+                                  return 'Пароли не совпадают';
                                 }
                                 return null;
                               },
@@ -229,23 +240,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           SizedBox(height: 50.h),
                           !signUpRequired
-                              ? MyButton(
+                              ? MyElevatedButton(
                                   width:
                                       MediaQuery.of(context).size.width * 0.9,
-                                  text: 'Sign Up',
+                                  text: 'Зарегистрироваться',
                                   onPressed: () async {
-                                    // if (_formSignUp.currentState!.validate()) {
-                                    //   //MyUser myUser = MyUser.empty;
-                                    //   //myUser = myUser.copyWith(
-                                    //     email: _emailController.text,
-                                    //     name: _nameController.text,
-                                    //   );
-                                    //   setState(() {
-                                    //     context.read<SignUpBloc>().add(
-                                    //         SignUpRequired(myUser,
-                                    //             _passwordController.text));
-                                    //   });
-                                    // }
+                                    if (_formSignUp.currentState!.validate()) {
+                                      context
+                                          .read<SignUpBloc>()
+                                          .add(SignUpRequired(
+                                            _nameController.text,
+                                            _emailController.text,
+                                            _passwordController.text,
+                                          ));
+                                    }
                                   },
                                 )
                               : const Center(
@@ -253,7 +261,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     color: AppColors.primaryElement,
                                   ),
                                 ),
-                          //const Center(child: CircularProgressIndicator()),
                           SizedBox(height: 20.h),
                         ],
                       ),

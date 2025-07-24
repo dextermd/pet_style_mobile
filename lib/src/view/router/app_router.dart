@@ -6,7 +6,6 @@ import 'package:pet_style_mobile/core/services/storage_services.dart';
 import 'package:pet_style_mobile/src/data/model/appointment/appointment.dart';
 import 'package:pet_style_mobile/src/data/model/promotion/promotion.dart';
 import 'package:pet_style_mobile/src/data/model/update_user_request/update_user_request.dart';
-import 'package:pet_style_mobile/src/data/model/user/user.dart';
 import 'package:pet_style_mobile/src/view/app/appointment/appointment_screen.dart';
 import 'package:pet_style_mobile/src/view/app/auth/sign_in/sign_in_screen.dart';
 import 'package:pet_style_mobile/src/view/app/auth/sign_up/sign_up_screen.dart';
@@ -107,7 +106,7 @@ class AppRouter {
                         name: AppRoutes.otpCode,
                         builder: (context, state) {
                           return OtpCodeScreen(
-                            updateUser: state.extra as UpdateUserRequest,
+                            phone: state.extra as String,
                           );
                         },
                       ),
